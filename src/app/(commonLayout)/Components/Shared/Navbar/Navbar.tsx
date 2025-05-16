@@ -1,3 +1,5 @@
+"use client";
+
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
 
 import {
@@ -23,6 +25,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Image from "next/image";
+import { useUser } from "@/context/user.provider";
+import { logout } from "@/services/AuthService";
 
 interface MenuItem {
   title: string;
@@ -137,6 +141,19 @@ const Navbar = ({
     signup: { title: "Sign up", url: "/signup" },
   },
 }: NavbarProps) => {
+  const { user, setIsLoading: userLoading } = useUser();
+
+  console.log("user from Navbar", user);
+
+  const handleLogout = () => {
+    logout();
+    userLoading(true);
+
+    // if (protectedRoutes.some((route) => pathName.match(route))) {
+    //   router.push("/");
+    // }
+  };
+
   return (
     <section className="m-auto container py-4">
       <div className="">
@@ -164,14 +181,18 @@ const Navbar = ({
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button asChild variant="outline" size="sm">
-              <a href={auth.login.url}>{auth.login.title}</a>
-            </Button>
-            <Button asChild size="sm">
-              <a href={auth.signup.url}>{auth.signup.title}</a>
-            </Button>
-          </div>
+          {!user ? (
+            <div className="flex gap-2">
+              <Button asChild variant="outline" size="sm">
+                <a href={auth.login.url}>{auth.login.title}</a>
+              </Button>
+              <Button asChild size="sm">
+                <a href={auth.signup.url}>{auth.signup.title}</a>
+              </Button>
+            </div>
+          ) : (
+            <Button onClick={() => handleLogout()}>Logout</Button>
+          )}
         </nav>
 
         {/* Mobile Menu */}
@@ -216,14 +237,18 @@ const Navbar = ({
                     {menu.map((item) => renderMobileMenuItem(item))}
                   </Accordion>
 
-                  <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
-                      <a href={auth.login.url}>{auth.login.title}</a>
-                    </Button>
-                    <Button asChild>
-                      <a href={auth.signup.url}>{auth.signup.title}</a>
-                    </Button>
-                  </div>
+                  {!user ? (
+                    <div className="flex flex-col gap-3">
+                      <Button asChild variant="outline">
+                        <a href={auth.login.url}>{auth.login.title}</a>
+                      </Button>
+                      <Button asChild>
+                        <a href={auth.signup.url}>{auth.signup.title}</a>
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button onClick={() => handleLogout()}>Logout</Button>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
