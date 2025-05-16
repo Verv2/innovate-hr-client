@@ -1,5 +1,3 @@
-// import { getCurrentUser } from "@/services/AuthServices";
-// import { IUserContext } from "@/types";
 import { getCurrentUser } from "@/services/AuthService";
 import { IUserContext } from "@/types";
 import {

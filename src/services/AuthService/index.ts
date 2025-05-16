@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
+import { getUser } from "../UserService";
 
 export const loginUser = async (userData: FieldValues) => {
   console.log("Base API from AuthService:", process.env.NEXT_PUBLIC_BASE_API);
@@ -38,11 +39,11 @@ export const getCurrentUser = async () => {
 
   if (accessToken) {
     decodedToken = await jwtDecode(accessToken);
-    return {
-      id: decodedToken.userId,
-      email: decodedToken.email,
-      role: decodedToken.role,
-    };
+
+    // const userData = getUser(decodedToken.userId);
+    const userData = getUser();
+
+    return userData;
   }
 
   return decodedToken;

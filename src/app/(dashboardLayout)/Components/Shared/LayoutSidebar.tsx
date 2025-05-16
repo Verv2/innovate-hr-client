@@ -1,6 +1,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -10,6 +11,8 @@ import {
 } from "@/components/ui/sidebar";
 
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import NavUser from "./NavUser";
+import { useUser } from "@/context/user.provider";
 
 // Menu items.
 const items = [
@@ -40,7 +43,16 @@ const items = [
   },
 ];
 
+const user = {
+  name: "UserName",
+  email: "m@example.com",
+  avatar: "/avatars/shadcn.jpg",
+};
+
 const LayoutSidebar = () => {
+  const userData = useUser();
+
+  console.log("User From Dashboard", userData);
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
@@ -62,6 +74,9 @@ const LayoutSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={user} />
+      </SidebarFooter>
     </Sidebar>
   );
 };
