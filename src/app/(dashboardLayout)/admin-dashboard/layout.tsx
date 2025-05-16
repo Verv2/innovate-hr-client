@@ -12,8 +12,8 @@ export default function AdminDashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <section>
       <AdminLayout>{children}</AdminLayout>
-    </div>
+    </section>
   );
 }

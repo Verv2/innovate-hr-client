@@ -1,22 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
-import { SidebarContext } from "./LayoutContext";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import LayoutSidebar from "../Components/Shared/LayoutSidebar";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const handleToggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
   return (
-    <SidebarContext.Provider
-      value={{
-        collapsed: sidebarOpen,
-        setCollapsed: handleToggleSidebar,
-      }}
-    >
-      {children}
-    </SidebarContext.Provider>
+    <SidebarProvider>
+      <LayoutSidebar />
+      <section>
+        <SidebarTrigger />
+        {children}
+      </section>
+    </SidebarProvider>
   );
 };
 
