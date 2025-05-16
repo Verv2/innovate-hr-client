@@ -2,15 +2,27 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUser } from "@/context/user.provider";
+import { useUserLogin } from "@/hooks/auth.hooks";
 import { loginSchema } from "@/schema/login.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 type TLogin = z.infer<typeof loginSchema>;
 
 const Login = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const redirect = searchParams.get("redirect");
+
+  const { setIsLoading: userLoading } = useUser();
+
+  const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
+
   const {
     register,
     handleSubmit,
@@ -21,7 +33,20 @@ const Login = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data);
+    handleUserLogin(data);
+    userLoading(true);
   };
+
+  useEffect(() => {
+    if (!isPending && isSuccess) {
+      if (redirect) {
+        console.log("Redirect", redirect);
+        router.push(redirect);
+      } else {
+        router.push("/");
+      }
+    }
+  }, [isPending, isSuccess, redirect, router]);
 
   return (
     <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">
