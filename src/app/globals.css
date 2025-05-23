@@ -118,3 +118,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.btn-violet {
+  @apply bg-violet-600 hover:bg-violet-700 dark:bg-violet-700 dark:hover:bg-violet-600 text-white font-semibold py-2 px-4 rounded cursor-pointer;
+}

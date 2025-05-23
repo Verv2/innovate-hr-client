@@ -18,12 +18,12 @@ import { useUser } from "@/context/user.provider";
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/admin-dashboard",
     icon: Home,
   },
   {
     title: "Inbox",
-    url: "#",
+    url: "/admin-dashboard/inbox",
     icon: Inbox,
   },
   {
