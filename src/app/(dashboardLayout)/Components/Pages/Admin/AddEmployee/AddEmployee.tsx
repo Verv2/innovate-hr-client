@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/stepper";
 import { useState } from "react";
 import Step1 from "./Step-1";
+import Step2 from "./Step-2";
 
 const steps = [1, 2, 3, 4, 5, 6, 7];
 
@@ -30,6 +31,7 @@ const AddEmployee = () => {
       </div>
       {/* form component */}
       {currentStep === 1 && <Step1 />}
+      {currentStep === 2 && <Step2 />}
 
       <div className="flex justify-center space-x-4">
         <Button
