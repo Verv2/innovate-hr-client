@@ -10,8 +10,12 @@ import {
 import { useState } from "react";
 import Step1 from "./Step-1";
 import Step2 from "./Step-2";
+import Step3 from "./Step-3";
+import Step4 from "./Step-4";
+import Step5 from "./Step-5";
+import Step6 from "./Step-6";
 
-const steps = [1, 2, 3, 4, 5, 6, 7];
+const steps = [1, 2, 3, 4, 5, 6];
 
 const AddEmployee = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -32,6 +36,10 @@ const AddEmployee = () => {
       {/* form component */}
       {currentStep === 1 && <Step1 />}
       {currentStep === 2 && <Step2 />}
+      {currentStep === 3 && <Step3 />}
+      {currentStep === 4 && <Step4 />}
+      {currentStep === 5 && <Step5 />}
+      {currentStep === 6 && <Step6 />}
 
       <div className="flex justify-center space-x-4">
         <Button
@@ -46,7 +54,7 @@ const AddEmployee = () => {
           variant="outline"
           className="w-32"
           onClick={() => setCurrentStep((prev) => prev + 1)}
-          disabled={currentStep > steps.length}
+          disabled={currentStep >= steps.length}
         >
           Next step
         </Button>

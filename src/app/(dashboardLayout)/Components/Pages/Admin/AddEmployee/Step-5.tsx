@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-// import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,20 +13,27 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-// import { PhoneInput } from "@/components/ui/phone-input";
 import { Input } from "@/components/ui/input";
-import { PhoneInput } from "@/components/extension/phone-input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { benefitEnrollmentConstant } from "./constants";
 
 const formSchema = z.object({
-  phoneNumber: z.string(),
-  email: z.string(),
-  residentialAddress: z.string().min(1),
-  name: z.string().min(1),
-  relationship: z.string().min(1),
-  emergencyPhoneNumber: z.string(),
+  bankName: z.string().min(1),
+  accountNumber: z.string().min(1),
+  accountHolder: z.string().min(1),
+  bankAddress: z.string().min(1),
+  sortCode: z.string().min(1),
+  ibanOrSwfit: z.string().min(1),
+  benefitEnrollment: z.string(),
 });
 
-const Step2 = () => {
+const Step5 = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
@@ -48,22 +54,25 @@ const Step2 = () => {
 
   return (
     <div className="max-w-3xl mx-auto mt-12">
-      <h2 className="text-2xl mb-12">Contact Information</h2>
+      <h2 className="text-2xl mb-12">Financial Information</h2>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 max-w-3xl mx-auto py-10"
+        >
           <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-6">
+            <div className="col-span-4">
               <FormField
                 control={form.control}
-                name="phoneNumber"
+                name="bankName"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col items-start">
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl className="w-full">
-                      <PhoneInput
-                        placeholder="Enter the Phone Number"
+                  <FormItem>
+                    <FormLabel>Bank Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter the bank name"
+                        type="text"
                         {...field}
-                        defaultCountry="TR"
                       />
                     </FormControl>
 
@@ -73,17 +82,38 @@ const Step2 = () => {
               />
             </div>
 
-            <div className="col-span-6">
+            <div className="col-span-4">
               <FormField
                 control={form.control}
-                name="email"
+                name="accountNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Account Number</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter the email"
-                        type="email"
+                        placeholder="Enter the account number"
+                        type="text"
+                        {...field}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="col-span-4">
+              <FormField
+                control={form.control}
+                name="accountHolder"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Account Holder Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter the account holder name"
+                        type="text"
                         {...field}
                       />
                     </FormControl>
@@ -97,13 +127,13 @@ const Step2 = () => {
 
           <FormField
             control={form.control}
-            name="residentialAddress"
+            name="bankAddress"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Residential Address</FormLabel>
+                <FormLabel>Bank Address</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter the current address"
+                    placeholder="Enter the address"
                     type="text"
                     {...field}
                   />
@@ -114,18 +144,17 @@ const Step2 = () => {
             )}
           />
 
-          <h2 className="text-2xl mb-12">Emergency Contact Information</h2>
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-4">
+          <div className="grid grid-cols-3 gap-4">
+            <div>
               <FormField
                 control={form.control}
-                name="name"
+                name="sortCode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Sort Code</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter the name of the person"
+                        placeholder="Enter the code"
                         type="text"
                         {...field}
                       />
@@ -137,16 +166,16 @@ const Step2 = () => {
               />
             </div>
 
-            <div className="col-span-4">
+            <div>
               <FormField
                 control={form.control}
-                name="relationship"
+                name="ibanOrSwfit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Relation Status</FormLabel>
+                    <FormLabel>Iban or Swfit Code</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter the relation status with the employee"
+                        placeholder="Enter the code here"
                         type="text"
                         {...field}
                       />
@@ -158,20 +187,30 @@ const Step2 = () => {
               />
             </div>
 
-            <div className="col-span-4">
+            <div>
               <FormField
                 control={form.control}
-                name="emergencyPhoneNumber"
+                name="benefitEnrollment"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col items-start">
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl className="w-full">
-                      <PhoneInput
-                        placeholder="Enter the phone number of the person"
-                        {...field}
-                        defaultCountry="TR"
-                      />
-                    </FormControl>
+                  <FormItem>
+                    <FormLabel>Benefit Enrollment</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl className="w-full">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a benefit" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {benefitEnrollmentConstant.map((item, index) => (
+                          <SelectItem key={index} value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
                     <FormMessage />
                   </FormItem>
@@ -188,4 +227,4 @@ const Step2 = () => {
   );
 };
 
-export default Step2;
+export default Step5;

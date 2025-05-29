@@ -11,6 +11,29 @@ export const maritalStatusConstant = [
   { value: "WIDOWED", label: "Widowed" },
 ];
 
+export const departmentConstant = [
+  { value: "HR", label: "Human Resources" },
+  { value: "IT", label: "Information Technology" },
+  { value: "FINANCE", label: "Finance" },
+  { value: "MARKETING", label: "Marketing" },
+  { value: "SALES", label: "Sales" },
+  { value: "OPERATIONS", label: "Operations" },
+  { value: "LEGAL", label: "Legal" },
+  { value: "ADMINISTRATION", label: "Administration" },
+];
+
+export const employmentTypeConstant = [
+  { value: "FULL_TIME", label: "Full Time" },
+  { value: "PART_TIME", label: "Part Time" },
+  { value: "CONTRACT", label: "Contract" },
+];
+
+export const benefitEnrollmentConstant = [
+  { value: "NONE", label: "None" },
+  { value: "HEALTH_INSURANCE", label: "Health Insurance" },
+  { value: "PENSION", label: "Person" },
+];
+
 export const nationalityConstant = [
   {
     num_code: "4",

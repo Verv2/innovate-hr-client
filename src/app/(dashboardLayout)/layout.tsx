@@ -1,10 +1,10 @@
 "use client";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import LayoutSidebar from "../Components/Shared/LayoutSidebar";
-import TopNavbar from "../Components/Shared/TopNavbar";
+import LayoutSidebar from "./Components/Shared/LayoutSidebar";
+import TopNavbar from "./Components/Shared/TopNavbar";
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout2 = ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
       <LayoutSidebar />
@@ -19,4 +19,4 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default DashboardLayout;
+export default DashboardLayout2;
