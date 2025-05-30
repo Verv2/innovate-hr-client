@@ -23,20 +23,13 @@ import {
   FileUploaderItem,
 } from "@/components/extension/file-upload";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
-
-const formSchema = z.object({
-  passportOrNationalId: z.any(),
-  insuranceNumber: z.string().min(1),
-  socialSecurityNumber: z.string().min(1),
-  visaExpiryDate: z.coerce.date(),
-  taxIdNumber: z.string().min(1).optional(),
-});
+import { identificationDocumentsSchema } from "@/schema/employee.schema";
 
 const Step3 = () => {
   const [files, setFiles] = useState<File[] | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   console.log("files", files);
-  //   console.log("files length", files.length);
 
   const dropZoneConfig = {
     maxFiles: 1,
@@ -44,21 +37,37 @@ const Step3 = () => {
     multiple: false,
   };
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof identificationDocumentsSchema>>({
+    resolver: zodResolver(identificationDocumentsSchema),
     defaultValues: {
       visaExpiryDate: undefined,
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof identificationDocumentsSchema>) {
     try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      let isValid = true;
+      if (!files || files.length === 0) {
+        isValid = false;
+        setFileError("Please upload a passport or national ID.");
+      }
+
+      if (!isValid) return;
+
+      const data = {
+        step: 3,
+        identificationDocuments: values,
+      };
+
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+
+      if (files) {
+        formData.append("passportOrNationalId", files[0]);
+      }
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
@@ -98,6 +107,9 @@ const Step3 = () => {
                         </p>
                       </div>
                     </FileInput>
+                    {fileError && (
+                      <p className="text-red-500 text-sm mt-2">{fileError}</p>
+                    )}
                     <FileUploaderContent>
                       {files &&
                         files.length > 0 &&

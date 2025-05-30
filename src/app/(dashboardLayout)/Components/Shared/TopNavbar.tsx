@@ -8,7 +8,7 @@ const TopNavbar = () => {
     <div className="space-x-4">
       <Button
         className="btn-violet w-[170px]"
-        onClick={() => router.push("/admin-dashboard/add-employee")}
+        onClick={() => router.push("/dashboard/admin/add-employee")}
       >
         Add New Employee
       </Button>

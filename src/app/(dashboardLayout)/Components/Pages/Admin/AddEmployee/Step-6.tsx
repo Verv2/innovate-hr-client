@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -21,39 +20,121 @@ import {
   FileUploaderContent,
   FileUploaderItem,
 } from "@/components/extension/file-upload";
-
-const formSchema = z.object({
-  signedContractPaperwork: z.string(),
-  educationalCertificates: z.string(),
-  professionalCertificates: z.string().optional(),
-  recentPhotograph: z.string().optional(),
-});
+import { additionalDocumentsSchema } from "@/schema/employee.schema";
 
 const Step6 = () => {
-  const [files, setFiles] = useState<File[] | null>(null);
+  const [signedContractPaperwork, setSignedContractPaperwork] = useState<
+    File[] | null
+  >(null);
+  const [educationalCertificates, setEducationalCertificates] = useState<
+    File[] | null
+  >(null);
+  const [professionalCertificates, setProfessionalCertificates] = useState<
+    File[] | null
+  >(null);
+  const [recentPhotograph, setRecentPhotograph] = useState<File[] | null>(null);
 
-  const dropZoneConfig = {
-    maxFiles: 5,
+  const signedContractPaperworkRef = useRef<HTMLDivElement>(null);
+  const educationalCertificatesRef = useRef<HTMLDivElement>(null);
+
+  const [fileErrors, setFileErrors] = useState<{
+    signed?: string;
+    educational?: string;
+  }>({});
+
+  const signedContractPaperworkConfig = {
+    maxFiles: 1,
     maxSize: 1024 * 1024 * 4,
     multiple: true,
   };
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+
+  const educationalCertificatesConfig = {
+    maxFiles: 2,
+    maxSize: 1024 * 1024 * 4,
+    multiple: true,
+  };
+
+  const professionalCertificatesConfig = {
+    maxFiles: 2,
+    maxSize: 1024 * 1024 * 4,
+    multiple: true,
+  };
+
+  const recentPhotographConfig = {
+    maxFiles: 1,
+    maxSize: 1024 * 1024 * 4,
+    multiple: true,
+  };
+
+  const form = useForm<z.infer<typeof additionalDocumentsSchema>>({
+    resolver: zodResolver(additionalDocumentsSchema),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof additionalDocumentsSchema>) {
     try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      const data = { step: 6 };
+      const errors: typeof fileErrors = {};
+
+      if (!signedContractPaperwork || signedContractPaperwork.length === 0) {
+        errors.signed = "Please upload signed contract paperwork.";
+      }
+
+      if (!educationalCertificates || educationalCertificates.length === 0) {
+        errors.educational = "Please upload educational certificates.";
+      }
+
+      if (Object.keys(errors).length > 0) {
+        setFileErrors(errors);
+        return;
+      }
+
+      setFileErrors({}); // Clear errors
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+
+      if (signedContractPaperwork) {
+        formData.append("signedContractPaperwork", signedContractPaperwork[0]);
+      }
+
+      if (educationalCertificates) {
+        for (const certificate of educationalCertificates) {
+          formData.append("educationalCertificates", certificate);
+        }
+      }
+      if (professionalCertificates) {
+        for (const certificate of professionalCertificates) {
+          formData.append("professionalCertificates", certificate);
+        }
+      }
+
+      if (recentPhotograph) {
+        formData.append("recentPhotograph", recentPhotograph[0]);
+      }
+
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+      // Append all files to formData as needed...
+
+      // Submit form
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
     }
   }
+
+  useEffect(() => {
+    if (fileErrors.signed) {
+      signedContractPaperworkRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    } else if (fileErrors.educational) {
+      educationalCertificatesRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [fileErrors]);
 
   return (
     <div className="max-w-3xl mx-auto mt-12">
@@ -68,10 +149,11 @@ const Step6 = () => {
                 <FormLabel>Signed Contract Paperwork</FormLabel>
                 <FormControl>
                   <FileUploader
-                    value={files}
-                    onValueChange={setFiles}
-                    dropzoneOptions={dropZoneConfig}
+                    value={signedContractPaperwork}
+                    onValueChange={setSignedContractPaperwork}
+                    dropzoneOptions={signedContractPaperworkConfig}
                     className="relative bg-background rounded-lg p-2"
+                    ref={signedContractPaperworkRef}
                   >
                     <FileInput
                       id="fileInput"
@@ -88,10 +170,15 @@ const Step6 = () => {
                         </p>
                       </div>
                     </FileInput>
+                    {fileErrors.signed && (
+                      <p className="text-red-500 text-sm mt-2">
+                        {fileErrors.signed}
+                      </p>
+                    )}
                     <FileUploaderContent>
-                      {files &&
-                        files.length > 0 &&
-                        files.map((file, i) => (
+                      {signedContractPaperwork &&
+                        signedContractPaperwork.length > 0 &&
+                        signedContractPaperwork.map((file, i) => (
                           <FileUploaderItem key={i} index={i}>
                             <Paperclip className="h-4 w-4 stroke-current" />
                             <span>{file.name}</span>
@@ -114,10 +201,11 @@ const Step6 = () => {
                 <FormLabel>Educational Certificates</FormLabel>
                 <FormControl>
                   <FileUploader
-                    value={files}
-                    onValueChange={setFiles}
-                    dropzoneOptions={dropZoneConfig}
+                    value={educationalCertificates}
+                    onValueChange={setEducationalCertificates}
+                    dropzoneOptions={educationalCertificatesConfig}
                     className="relative bg-background rounded-lg p-2"
+                    ref={educationalCertificatesRef}
                   >
                     <FileInput
                       id="fileInput"
@@ -134,10 +222,15 @@ const Step6 = () => {
                         </p>
                       </div>
                     </FileInput>
+                    {fileErrors.educational && (
+                      <p className="text-red-500 text-sm mt-2">
+                        {fileErrors.educational}
+                      </p>
+                    )}
                     <FileUploaderContent>
-                      {files &&
-                        files.length > 0 &&
-                        files.map((file, i) => (
+                      {educationalCertificates &&
+                        educationalCertificates.length > 0 &&
+                        educationalCertificates.map((file, i) => (
                           <FileUploaderItem key={i} index={i}>
                             <Paperclip className="h-4 w-4 stroke-current" />
                             <span>{file.name}</span>
@@ -160,9 +253,9 @@ const Step6 = () => {
                 <FormLabel>Professional Certificates</FormLabel>
                 <FormControl>
                   <FileUploader
-                    value={files}
-                    onValueChange={setFiles}
-                    dropzoneOptions={dropZoneConfig}
+                    value={professionalCertificates}
+                    onValueChange={setProfessionalCertificates}
+                    dropzoneOptions={professionalCertificatesConfig}
                     className="relative bg-background rounded-lg p-2"
                   >
                     <FileInput
@@ -181,9 +274,9 @@ const Step6 = () => {
                       </div>
                     </FileInput>
                     <FileUploaderContent>
-                      {files &&
-                        files.length > 0 &&
-                        files.map((file, i) => (
+                      {professionalCertificates &&
+                        professionalCertificates.length > 0 &&
+                        professionalCertificates.map((file, i) => (
                           <FileUploaderItem key={i} index={i}>
                             <Paperclip className="h-4 w-4 stroke-current" />
                             <span>{file.name}</span>
@@ -206,9 +299,9 @@ const Step6 = () => {
                 <FormLabel>Recent Photograph</FormLabel>
                 <FormControl>
                   <FileUploader
-                    value={files}
-                    onValueChange={setFiles}
-                    dropzoneOptions={dropZoneConfig}
+                    value={recentPhotograph}
+                    onValueChange={setRecentPhotograph}
+                    dropzoneOptions={recentPhotographConfig}
                     className="relative bg-background rounded-lg p-2"
                   >
                     <FileInput
@@ -227,9 +320,9 @@ const Step6 = () => {
                       </div>
                     </FileInput>
                     <FileUploaderContent>
-                      {files &&
-                        files.length > 0 &&
-                        files.map((file, i) => (
+                      {recentPhotograph &&
+                        recentPhotograph.length > 0 &&
+                        recentPhotograph.map((file, i) => (
                           <FileUploaderItem key={i} index={i}>
                             <Paperclip className="h-4 w-4 stroke-current" />
                             <span>{file.name}</span>

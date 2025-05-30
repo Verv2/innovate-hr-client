@@ -41,12 +41,18 @@ const Step1 = () => {
 
   const onSubmit = (values: z.infer<typeof employeeFormSchema>) => {
     try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      const data = {
+        step: 1,
+        basicInfo: values,
+      };
+
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+
+      // View contents
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");

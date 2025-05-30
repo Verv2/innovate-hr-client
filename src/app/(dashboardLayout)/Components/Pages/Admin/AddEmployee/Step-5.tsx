@@ -22,30 +22,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { benefitEnrollmentConstant } from "./constants";
-
-const formSchema = z.object({
-  bankName: z.string().min(1),
-  accountNumber: z.string().min(1),
-  accountHolder: z.string().min(1),
-  bankAddress: z.string().min(1),
-  sortCode: z.string().min(1),
-  ibanOrSwfit: z.string().min(1),
-  benefitEnrollment: z.string(),
-});
+import { financialInformationSchema } from "@/schema/employee.schema";
 
 const Step5 = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof financialInformationSchema>>({
+    resolver: zodResolver(financialInformationSchema),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof financialInformationSchema>) {
     try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      const data = {
+        step: 5,
+        financialInformation: values,
+      };
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+
+      // View contents
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");

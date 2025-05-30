@@ -43,7 +43,7 @@ const Login = () => {
         console.log("Redirect", redirect);
         router.push(redirect);
       } else {
-        router.push("/admin-dashboard");
+        router.push("/dashboard/admin");
       }
     }
   }, [isPending, isSuccess, redirect, router]);

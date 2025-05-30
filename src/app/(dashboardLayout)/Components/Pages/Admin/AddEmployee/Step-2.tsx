@@ -17,29 +17,26 @@ import {
 // import { PhoneInput } from "@/components/ui/phone-input";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/extension/phone-input";
-
-const formSchema = z.object({
-  phoneNumber: z.string(),
-  email: z.string(),
-  residentialAddress: z.string().min(1),
-  name: z.string().min(1),
-  relationship: z.string().min(1),
-  emergencyPhoneNumber: z.string(),
-});
+import { contactInformationFormSchema } from "@/schema/employee.schema";
 
 const Step2 = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof contactInformationFormSchema>>({
+    resolver: zodResolver(contactInformationFormSchema),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof contactInformationFormSchema>) {
     try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      const data = {
+        step: 2,
+        contactInformation: values,
+      };
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+
+      // View contents
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");

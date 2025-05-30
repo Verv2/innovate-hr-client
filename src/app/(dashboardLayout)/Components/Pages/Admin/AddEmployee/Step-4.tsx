@@ -23,31 +23,29 @@ import {
 } from "@/components/ui/select";
 import { departmentConstant, employmentTypeConstant } from "./constants";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
-
-const formSchema = z.object({
-  employeeIdNumber: z.string().min(1),
-  jobTitle: z.string().min(1),
-  department: z.string(),
-  dateOfJoining: z.coerce.date(),
-  employmentType: z.string(),
-});
+import { employeeDetailsSchema } from "@/schema/employee.schema";
 
 const Step4 = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof employeeDetailsSchema>>({
+    resolver: zodResolver(employeeDetailsSchema),
     defaultValues: {
       dateOfJoining: undefined,
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof employeeDetailsSchema>) {
     try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
+      const data = {
+        step: 4,
+        employeeDetails: values,
+      };
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(data));
+
+      // View contents
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
