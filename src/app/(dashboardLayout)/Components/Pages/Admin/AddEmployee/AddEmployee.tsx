@@ -14,8 +14,9 @@ import Step3 from "./Step-3";
 import Step4 from "./Step-4";
 import Step5 from "./Step-5";
 import Step6 from "./Step-6";
+import Step7 from "./Step-7";
 
-const steps = [1, 2, 3, 4, 5, 6];
+const steps = [1, 2, 3, 4, 5, 6, 7] as const;
 
 const AddEmployee = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -40,6 +41,7 @@ const AddEmployee = () => {
       {currentStep === 4 && <Step4 />}
       {currentStep === 5 && <Step5 />}
       {currentStep === 6 && <Step6 />}
+      {currentStep === 7 && <Step7 />}
 
       <div className="flex justify-center space-x-4">
         <Button

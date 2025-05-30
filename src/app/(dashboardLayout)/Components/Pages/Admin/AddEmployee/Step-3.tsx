@@ -24,12 +24,14 @@ import {
 } from "@/components/extension/file-upload";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
 import { identificationDocumentsSchema } from "@/schema/employee.schema";
+import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 const Step3 = () => {
+  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
+    useAddTemporaryEmployee();
   const [files, setFiles] = useState<File[] | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
-
-  console.log("files", files);
 
   const dropZoneConfig = {
     maxFiles: 1,
@@ -44,7 +46,9 @@ const Step3 = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof identificationDocumentsSchema>) {
+  const onSubmit = async (
+    values: z.infer<typeof identificationDocumentsSchema>
+  ) => {
     try {
       let isValid = true;
       if (!files || files.length === 0) {
@@ -65,13 +69,20 @@ const Step3 = () => {
       if (files) {
         formData.append("passportOrNationalId", files[0]);
       }
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+
+      await handleUseAddTemporaryEmployee(formData);
+
+      // for (const pair of formData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
+  };
+
+  if (isPending) {
+    return <Loading />;
   }
 
   return (

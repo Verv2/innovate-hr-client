@@ -30,8 +30,13 @@ import {
   nationalityConstant,
 } from "./constants";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
+import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 const Step1 = () => {
+  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
+    useAddTemporaryEmployee();
+
   const form = useForm<z.infer<typeof employeeFormSchema>>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: {
@@ -39,7 +44,7 @@ const Step1 = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof employeeFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof employeeFormSchema>) => {
     try {
       const data = {
         step: 1,
@@ -50,14 +55,19 @@ const Step1 = () => {
       formData.append("data", JSON.stringify(data));
 
       // View contents
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      // for (const pair of formData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
+      await handleUseAddTemporaryEmployee(formData);
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
   };
+
+  if (isPending) {
+    return <Loading />;
+  }
 
   return (
     <div className="max-w-3xl mx-auto mt-12">

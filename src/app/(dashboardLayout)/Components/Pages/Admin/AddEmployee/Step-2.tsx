@@ -18,13 +18,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/extension/phone-input";
 import { contactInformationFormSchema } from "@/schema/employee.schema";
+import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 const Step2 = () => {
+  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
+    useAddTemporaryEmployee();
+
   const form = useForm<z.infer<typeof contactInformationFormSchema>>({
     resolver: zodResolver(contactInformationFormSchema),
   });
 
-  function onSubmit(values: z.infer<typeof contactInformationFormSchema>) {
+  const onSubmit = async (
+    values: z.infer<typeof contactInformationFormSchema>
+  ) => {
     try {
       const data = {
         step: 2,
@@ -34,13 +41,19 @@ const Step2 = () => {
       formData.append("data", JSON.stringify(data));
 
       // View contents
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      // for (const pair of formData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
+
+      await handleUseAddTemporaryEmployee(formData);
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
+  };
+
+  if (isPending) {
+    return <Loading />;
   }
 
   return (

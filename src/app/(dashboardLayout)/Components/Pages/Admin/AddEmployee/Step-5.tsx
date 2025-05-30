@@ -23,13 +23,20 @@ import {
 } from "@/components/ui/select";
 import { benefitEnrollmentConstant } from "./constants";
 import { financialInformationSchema } from "@/schema/employee.schema";
+import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 const Step5 = () => {
+  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
+    useAddTemporaryEmployee();
+
   const form = useForm<z.infer<typeof financialInformationSchema>>({
     resolver: zodResolver(financialInformationSchema),
   });
 
-  function onSubmit(values: z.infer<typeof financialInformationSchema>) {
+  const onSubmit = async (
+    values: z.infer<typeof financialInformationSchema>
+  ) => {
     try {
       const data = {
         step: 5,
@@ -38,14 +45,20 @@ const Step5 = () => {
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
 
+      await handleUseAddTemporaryEmployee(formData);
+
       // View contents
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      // for (const pair of formData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
+  };
+
+  if (isPending) {
+    return <Loading />;
   }
 
   return (

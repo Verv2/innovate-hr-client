@@ -21,8 +21,13 @@ import {
   FileUploaderItem,
 } from "@/components/extension/file-upload";
 import { additionalDocumentsSchema } from "@/schema/employee.schema";
+import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 const Step6 = () => {
+  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
+    useAddTemporaryEmployee();
+
   const [signedContractPaperwork, setSignedContractPaperwork] = useState<
     File[] | null
   >(null);
@@ -70,7 +75,9 @@ const Step6 = () => {
     resolver: zodResolver(additionalDocumentsSchema),
   });
 
-  function onSubmit(values: z.infer<typeof additionalDocumentsSchema>) {
+  const onSubmit = async (
+    values: z.infer<typeof additionalDocumentsSchema>
+  ) => {
     try {
       const data = { step: 6 };
       const errors: typeof fileErrors = {};
@@ -111,16 +118,18 @@ const Step6 = () => {
         formData.append("recentPhotograph", recentPhotograph[0]);
       }
 
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      await handleUseAddTemporaryEmployee(formData);
+
+      // for (const pair of formData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
       // Append all files to formData as needed...
 
       // Submit form
     } catch (error) {
       console.error("Form submission error", error);
     }
-  }
+  };
 
   useEffect(() => {
     if (fileErrors.signed) {
@@ -135,6 +144,10 @@ const Step6 = () => {
       });
     }
   }, [fileErrors]);
+
+  if (isPending) {
+    return <Loading />;
+  }
 
   return (
     <div className="max-w-3xl mx-auto mt-12">
