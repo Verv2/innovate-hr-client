@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { toast } from "sonner";
@@ -23,16 +24,37 @@ import {
 } from "@/components/ui/select";
 import { benefitEnrollmentConstant } from "./constants";
 import { financialInformationSchema } from "@/schema/employee.schema";
-import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
+import { TFinancialInformation } from "@/types";
+import { useEffect } from "react";
 
-const Step5 = () => {
-  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
-    useAddTemporaryEmployee();
+type TStep5Props = {
+  handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
+  isPending: boolean;
+  financialInformation?: TFinancialInformation;
+  onRefetch: () => Promise<void>;
+};
 
+const Step5 = ({
+  handleUseAddTemporaryEmployee,
+  isPending,
+  financialInformation,
+  onRefetch,
+}: TStep5Props) => {
   const form = useForm<z.infer<typeof financialInformationSchema>>({
     resolver: zodResolver(financialInformationSchema),
   });
+
+  // form reset
+  const { reset } = form;
+
+  useEffect(() => {
+    if (financialInformation) {
+      reset({
+        ...financialInformation,
+      });
+    }
+  }, [financialInformation, reset]);
 
   const onSubmit = async (
     values: z.infer<typeof financialInformationSchema>
@@ -46,11 +68,7 @@ const Step5 = () => {
       formData.append("data", JSON.stringify(data));
 
       await handleUseAddTemporaryEmployee(formData);
-
-      // View contents
-      // for (const pair of formData.entries()) {
-      //   console.log(pair[0], pair[1]);
-      // }
+      await onRefetch();
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,12 +24,28 @@ import {
 } from "@/components/extension/file-upload";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
 import { identificationDocumentsSchema } from "@/schema/employee.schema";
-import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
+import { TIdentificationDocuments } from "@/types";
 
-const Step3 = () => {
-  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
-    useAddTemporaryEmployee();
+type TStep3Props = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
+  isPending: boolean;
+  identificationDocuments?: TIdentificationDocuments;
+  onRefetch: () => Promise<void>;
+};
+
+const Step3 = ({
+  handleUseAddTemporaryEmployee,
+  isPending,
+  identificationDocuments,
+  onRefetch,
+}: TStep3Props) => {
+  console.log(
+    "Contact identificationDocuments from 3",
+    identificationDocuments
+  );
+
   const [files, setFiles] = useState<File[] | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
 
@@ -45,6 +61,17 @@ const Step3 = () => {
       visaExpiryDate: undefined,
     },
   });
+
+  // form reset
+  const { reset } = form;
+
+  useEffect(() => {
+    if (identificationDocuments) {
+      reset({
+        ...identificationDocuments,
+      });
+    }
+  }, [identificationDocuments, reset]);
 
   const onSubmit = async (
     values: z.infer<typeof identificationDocumentsSchema>
@@ -71,10 +98,7 @@ const Step3 = () => {
       }
 
       await handleUseAddTemporaryEmployee(formData);
-
-      // for (const pair of formData.entries()) {
-      //   console.log(pair[0], pair[1]);
-      // }
+      await onRefetch();
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");

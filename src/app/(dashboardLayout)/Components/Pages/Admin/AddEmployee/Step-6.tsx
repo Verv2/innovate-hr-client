@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useEffect, useRef, useState } from "react";
@@ -24,10 +25,17 @@ import { additionalDocumentsSchema } from "@/schema/employee.schema";
 import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
-const Step6 = () => {
-  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
-    useAddTemporaryEmployee();
+type TStep6Props = {
+  handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
+  isPending: boolean;
+  onRefetch: () => Promise<void>;
+};
 
+const Step6 = ({
+  handleUseAddTemporaryEmployee,
+  isPending,
+  onRefetch,
+}: TStep6Props) => {
   const [signedContractPaperwork, setSignedContractPaperwork] = useState<
     File[] | null
   >(null);
@@ -119,13 +127,7 @@ const Step6 = () => {
       }
 
       await handleUseAddTemporaryEmployee(formData);
-
-      // for (const pair of formData.entries()) {
-      //   console.log(pair[0], pair[1]);
-      // }
-      // Append all files to formData as needed...
-
-      // Submit form
+      await onRefetch();
     } catch (error) {
       console.error("Form submission error", error);
     }

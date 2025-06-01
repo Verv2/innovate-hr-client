@@ -16,7 +16,6 @@ import {
   Download,
   Calendar,
   MapPin,
-  Mail,
   Building,
 } from "lucide-react";
 import Image from "next/image";
@@ -48,6 +47,10 @@ const Step7 = () => {
     isSuccess: temporaryEmployeeSuccess,
   } = useGetTemporaryEmployee();
 
+  const handleOnClick = () => {
+    console.log("Button Clicked");
+  };
+
   if (temporaryEmployeeLoading) {
     return <Loading />;
   }
@@ -61,13 +64,16 @@ const Step7 = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8 text-left">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-5">
           <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600">
             Employee Profile
           </h1>
-          <p className="text-slate-600">
-            Complete employee information and documentation
-          </p>
+          <Button
+            className="btn-violet w-[200px] text-lg py-5"
+            onClick={() => handleOnClick()}
+          >
+            Click to add
+          </Button>
         </div>
 
         {/* Profile Overview */}
@@ -123,6 +129,21 @@ const Step7 = () => {
                       className="border-purple-200 text-purple-700"
                     >
                       {temporaryEmployeeData.data.basicInfo.maritalStatus}
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className="border-purple-200 text-purple-700"
+                    >
+                      {
+                        temporaryEmployeeData.data.contactInformation
+                          .phoneNumber
+                      }
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className="border-purple-200 text-purple-700"
+                    >
+                      {temporaryEmployeeData.data.contactInformation.email}
                     </Badge>
                   </div>
                 </div>
@@ -240,12 +261,12 @@ const Step7 = () => {
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-3">
-                <div className="flex items-center gap-2 p-2 rounded-md bg-purple-50">
+                {/* <div className="flex items-center gap-2 p-2 rounded-md bg-purple-50">
                   <Phone className="h-4 w-4 text-purple-500" />
                   <span className="font-medium">
                     {temporaryEmployeeData.data.contactInformation.phoneNumber}
                   </span>
-                </div>
+                </div> */}
                 <div className="flex items-center gap-2 p-2 rounded-md bg-purple-50">
                   <Phone className="h-4 w-4 text-purple-500" />
                   <span className="font-medium">
@@ -255,12 +276,12 @@ const Step7 = () => {
                     }
                   </span>
                 </div>
-                <div className="flex items-center gap-2 p-2 rounded-md bg-purple-50">
+                {/* <div className="flex items-center gap-2 p-2 rounded-md bg-purple-50">
                   <Mail className="h-4 w-4 text-purple-500" />
                   <span className="font-medium">
                     {temporaryEmployeeData.data.contactInformation.email}
                   </span>
-                </div>
+                </div> */}
               </div>
             </CardContent>
           </Card>

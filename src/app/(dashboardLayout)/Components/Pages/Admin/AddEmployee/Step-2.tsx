@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { toast } from "sonner";
@@ -14,20 +15,40 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-// import { PhoneInput } from "@/components/ui/phone-input";
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/extension/phone-input";
 import { contactInformationFormSchema } from "@/schema/employee.schema";
-import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
+import { TContactInformation } from "@/types";
+import { useEffect } from "react";
 
-const Step2 = () => {
-  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
-    useAddTemporaryEmployee();
+type TStep2Props = {
+  handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
+  isPending: boolean;
+  contactInformation?: TContactInformation;
+  onRefetch: () => Promise<void>;
+};
 
+const Step2 = ({
+  handleUseAddTemporaryEmployee,
+  isPending,
+  contactInformation,
+  onRefetch,
+}: TStep2Props) => {
   const form = useForm<z.infer<typeof contactInformationFormSchema>>({
     resolver: zodResolver(contactInformationFormSchema),
   });
+
+  // form reset
+  const { reset } = form;
+
+  useEffect(() => {
+    if (contactInformation) {
+      reset({
+        ...contactInformation,
+      });
+    }
+  }, [contactInformation, reset]);
 
   const onSubmit = async (
     values: z.infer<typeof contactInformationFormSchema>
@@ -46,6 +67,7 @@ const Step2 = () => {
       // }
 
       await handleUseAddTemporaryEmployee(formData);
+      await onRefetch();
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { toast } from "sonner";
@@ -24,19 +25,43 @@ import {
 import { departmentConstant, employmentTypeConstant } from "./constants";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
 import { employeeDetailsSchema } from "@/schema/employee.schema";
-import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
+import { TEmployeeDetails } from "@/types";
+import { useEffect } from "react";
 
-const Step4 = () => {
-  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
-    useAddTemporaryEmployee();
+type TStep4Props = {
+  handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
+  isPending: boolean;
+  employeeDetails?: TEmployeeDetails;
+  onRefetch: () => Promise<void>;
+};
 
+const Step4 = ({
+  handleUseAddTemporaryEmployee,
+  isPending,
+  employeeDetails,
+  onRefetch,
+}: TStep4Props) => {
   const form = useForm<z.infer<typeof employeeDetailsSchema>>({
     resolver: zodResolver(employeeDetailsSchema),
     defaultValues: {
       dateOfJoining: undefined,
     },
   });
+
+  const { reset } = form;
+
+  useEffect(() => {
+    if (employeeDetails) {
+      reset({
+        ...employeeDetails,
+        // Ensure dateOfBirth is in correct format if it's a Date object
+        dateOfJoining: employeeDetails.dateOfJoining
+          ? new Date(employeeDetails.dateOfJoining)
+          : undefined,
+      });
+    }
+  }, [employeeDetails, reset]);
 
   const onSubmit = async (values: z.infer<typeof employeeDetailsSchema>) => {
     try {
@@ -48,6 +73,7 @@ const Step4 = () => {
       formData.append("data", JSON.stringify(data));
 
       await handleUseAddTemporaryEmployee(formData);
+      await onRefetch();
 
       // View contents
       // for (const pair of formData.entries()) {

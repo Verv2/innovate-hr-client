@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { toast } from "sonner";
@@ -30,19 +31,43 @@ import {
   nationalityConstant,
 } from "./constants";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
-import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
+import { TBasicInfo } from "@/types";
+import { useEffect } from "react";
 
-const Step1 = () => {
-  const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
-    useAddTemporaryEmployee();
+type TStep1Props = {
+  handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
+  isPending: boolean;
+  basicInfo?: TBasicInfo;
+  onRefetch: () => Promise<void>;
+};
 
+const Step1 = ({
+  handleUseAddTemporaryEmployee,
+  isPending,
+  basicInfo,
+  onRefetch,
+}: TStep1Props) => {
   const form = useForm<z.infer<typeof employeeFormSchema>>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: {
       dateOfBirth: undefined,
     },
   });
+
+  const { reset } = form;
+
+  useEffect(() => {
+    if (basicInfo) {
+      reset({
+        ...basicInfo,
+        // Ensure dateOfBirth is in correct format if it's a Date object
+        dateOfBirth: basicInfo.dateOfBirth
+          ? new Date(basicInfo.dateOfBirth)
+          : undefined,
+      });
+    }
+  }, [basicInfo, reset]);
 
   const onSubmit = async (values: z.infer<typeof employeeFormSchema>) => {
     try {
@@ -53,12 +78,8 @@ const Step1 = () => {
 
       const formData = new FormData();
       formData.append("data", JSON.stringify(data));
-
-      // View contents
-      // for (const pair of formData.entries()) {
-      //   console.log(pair[0], pair[1]);
-      // }
       await handleUseAddTemporaryEmployee(formData);
+      await onRefetch();
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
