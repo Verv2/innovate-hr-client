@@ -4,6 +4,20 @@
 import axiosInstance from "@/lib/AxiosInstance";
 import { AxiosError } from "axios";
 
+export const addEmployee = async () => {
+  try {
+    const { data } = await axiosInstance.post("/employee/add-employee");
+
+    return data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+
+    console.log(axiosError.response?.data || axiosError.message);
+
+    throw new Error("Failed to add employee");
+  }
+};
+
 export const addTemporaryEmployee = async (
   formData: FormData
 ): Promise<any> => {
@@ -36,7 +50,7 @@ export const getTemporaryEmployee = async () => {
       "/employee/get-temporary-employee"
     );
 
-    return data.data;
+    return data;
   } catch (error: any) {
     throw new Error(error.message);
   }

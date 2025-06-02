@@ -2,8 +2,10 @@ import AddEmployee from "@/app/(dashboardLayout)/Components/Pages/Admin/AddEmplo
 
 const AddEmployeePage = () => {
   return (
-    <div>
-      <h2>This is add employee page</h2>
+    <div className="mt-5">
+      <h2 className="text-3xl text-center font-medium mb-10">
+        Please fill all the information and submit the form
+      </h2>
       <AddEmployee />
     </div>
   );

@@ -15,7 +15,7 @@ export type TBasicInfo = {
   gender: "MALE" | "FEMALE" | "OTHER";
   homeAddress: string;
   nationality: string;
-  maritalStatus: "SINGLE" | "MARRIED" | "DIVORCED" | "WIDOWED";
+  maritalStatus?: "SINGLE" | "MARRIED" | "DIVORCED" | "WIDOWED";
 };
 
 export type TContactInformation = {
@@ -51,4 +51,18 @@ export type TFinancialInformation = {
   ibanOrSwfit: string;
   accountHolder: string;
   benefitEnrollment: string;
+};
+
+export type TFullTemporaryData = {
+  basicInfo: TBasicInfo;
+  contactInformation: TContactInformation;
+  employeeDetails: TEmployeeDetails;
+  financialInformation: TFinancialInformation;
+  identificationDocuments: TIdentificationDocuments;
+  passportOrNationalIdUrl: string;
+  signedContractPaperworkUrl: string;
+  educationalCertificatesUrl: string[];
+  professionalCertificatesUrl: string[];
+  recentPhotographUrl: string;
+  step: number;
 };

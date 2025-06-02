@@ -29,18 +29,20 @@ const AddEmployee = () => {
   const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
     useAddTemporaryEmployee();
   const {
-    data: temporaryEmployeeData,
+    data: employeeData,
     isLoading: temporaryEmployeeLoading,
     refetch,
   } = useGetTemporaryEmployee();
 
   const [currentStep, setCurrentStep] = useState(1);
 
+  const temporaryEmployeeData = employeeData?.data;
+
   const backendStep = temporaryEmployeeData?.step ?? 1;
 
   const maxAllowedStep = backendStep >= FINAL_FORM_STEP ? 7 : backendStep;
 
-  console.log("temporary", temporaryEmployeeData?.data?.financialInformation);
+  console.log("temporary", temporaryEmployeeData);
 
   if (temporaryEmployeeLoading) {
     return <Loading />;
@@ -132,7 +134,15 @@ const AddEmployee = () => {
           }}
         />
       )}
-      {currentStep === 7 && <Step7 />}
+      {currentStep === 7 && (
+        <Step7
+          previewData={temporaryEmployeeData?.data}
+          creationDate={{
+            createdAt: temporaryEmployeeData.createdAt,
+            updatedAt: temporaryEmployeeData.updatedAt,
+          }}
+        />
+      )}
 
       <div className="flex justify-center space-x-4">
         <Button
@@ -149,7 +159,7 @@ const AddEmployee = () => {
           onClick={() => setCurrentStep((prev) => prev + 1)}
           // disabled={currentStep >= steps.length}
           disabled={
-            currentStep >= steps.length || currentStep >= maxAllowedStep + 1
+            currentStep >= steps.length || currentStep >= maxAllowedStep
           }
         >
           Next step

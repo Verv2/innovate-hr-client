@@ -46,7 +46,7 @@ const items = [
 const user = {
   name: "UserName",
   email: "m@example.com",
-  avatar: "/avatars/shadcn.jpg",
+  avatar: "https://avatar.iran.liara.run/public",
 };
 
 const LayoutSidebar = () => {

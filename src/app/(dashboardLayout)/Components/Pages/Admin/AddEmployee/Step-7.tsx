@@ -1,7 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
-import { useGetTemporaryEmployee } from "@/hooks/admin.hooks";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,47 +18,42 @@ import {
   Building,
 } from "lucide-react";
 import Image from "next/image";
+import { TFullTemporaryData } from "@/types";
+import {
+  formatDate,
+  getDocumentName,
+  getEmploymentTypeLabel,
+} from "@/lib/utils";
+import { useAddEmployee } from "@/hooks/admin.hooks";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
+import { useRouter } from "next/navigation";
 
-const Step7 = () => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+type TStep7Props = {
+  previewData: TFullTemporaryData;
+  creationDate: { createdAt: Date; updatedAt: Date };
+};
 
-  const getEmploymentTypeLabel = (type: string) => {
-    return type
-      .replace("_", " ")
-      .toLowerCase()
-      .replace(/\b\w/g, (l) => l.toUpperCase());
-  };
-
-  const getDocumentName = (url: string) => {
-    const parts = url.split("-");
-    return parts[parts.length - 1].replace(".pdf", "").replace(/[_]/g, " ");
-  };
-
+const Step7 = ({ previewData, creationDate }: TStep7Props) => {
+  const router = useRouter();
   const {
-    data: temporaryEmployeeData,
-    isLoading: temporaryEmployeeLoading,
-    isSuccess: temporaryEmployeeSuccess,
-  } = useGetTemporaryEmployee();
+    mutateAsync: handleAddEmployee,
+    isPending: isAddEmployeePending,
+    isSuccess: isAddEmployeeSuccess,
+  } = useAddEmployee();
 
-  const handleOnClick = () => {
-    console.log("Button Clicked");
+  const handleOnClick = async () => {
+    try {
+      await handleAddEmployee();
+      router.push("/dashboard/admin");
+    } catch (error: any) {
+      console.error("Error adding employee:", error.message);
+    }
   };
 
-  if (temporaryEmployeeLoading) {
+  if (isAddEmployeePending || isAddEmployeeSuccess) {
     return <Loading />;
   }
 
-  console.log("Temporary Employee Data:", temporaryEmployeeData);
-
-  if (temporaryEmployeeSuccess && !temporaryEmployeeData) {
-    return <div>No temporary employee data found.</div>;
-  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8 text-left">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -87,8 +81,7 @@ const Step7 = () => {
                   <div className="rounded-full p-1 bg-white shadow-xl">
                     <Image
                       src={
-                        temporaryEmployeeData.data.recentPhotographUrl ||
-                        "/placeholder.svg"
+                        previewData?.recentPhotographUrl || "/placeholder.svg"
                       }
                       alt="Employee Photo"
                       width={128}
@@ -97,53 +90,49 @@ const Step7 = () => {
                     />
                   </div>
                   <Badge className="mt-2 shadow-md">
-                    {temporaryEmployeeData.data.basicInfo.gender}
+                    {previewData?.basicInfo.gender}
                   </Badge>
                 </div>
 
                 {/* Name, Job Title, Badges */}
                 <div className="flex-1 space-y-2 pt-4">
                   <h2 className="text-3xl font-bold text-slate-900">
-                    {temporaryEmployeeData.data.basicInfo.firstName}{" "}
-                    {temporaryEmployeeData.data.basicInfo?.middleName}{" "}
-                    {temporaryEmployeeData.data.basicInfo.lastName}
+                    {previewData?.basicInfo.firstName}{" "}
+                    {previewData?.basicInfo?.middleName}{" "}
+                    {previewData?.basicInfo.lastName}
                   </h2>
                   <p className="text-xl text-slate-600">
-                    {temporaryEmployeeData.data.employeeDetails.jobTitle}
+                    {previewData?.employeeDetails.jobTitle}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <Badge className="bg-blue-500 hover:bg-blue-600">
-                      {temporaryEmployeeData.data.employeeDetails.department}
+                      {previewData?.employeeDetails.department}
                     </Badge>
                     <Badge
                       variant="outline"
                       className="border-blue-200 text-blue-700"
                     >
                       {getEmploymentTypeLabel(
-                        temporaryEmployeeData.data.employeeDetails
-                          .employmentType
+                        previewData?.employeeDetails.employmentType
                       )}
                     </Badge>
                     <Badge
                       variant="outline"
                       className="border-purple-200 text-purple-700"
                     >
-                      {temporaryEmployeeData.data.basicInfo.maritalStatus}
+                      {previewData?.basicInfo?.maritalStatus}
                     </Badge>
                     <Badge
                       variant="outline"
                       className="border-purple-200 text-purple-700"
                     >
-                      {
-                        temporaryEmployeeData.data.contactInformation
-                          .phoneNumber
-                      }
+                      {previewData?.contactInformation.phoneNumber}
                     </Badge>
                     <Badge
                       variant="outline"
                       className="border-purple-200 text-purple-700"
                     >
-                      {temporaryEmployeeData.data.contactInformation.email}
+                      {previewData?.contactInformation.email}
                     </Badge>
                   </div>
                 </div>
@@ -169,9 +158,7 @@ const Step7 = () => {
                   </label>
                   <p className="flex items-center gap-2 mt-1 font-medium">
                     <Calendar className="h-4 w-4 text-blue-500" />
-                    {formatDate(
-                      temporaryEmployeeData.data.basicInfo.dateOfBirth
-                    )}
+                    {formatDate(previewData?.basicInfo.dateOfBirth)}
                   </p>
                 </div>
                 <div>
@@ -179,7 +166,7 @@ const Step7 = () => {
                     Nationality
                   </label>
                   <p className="mt-1 font-medium">
-                    {temporaryEmployeeData.data.basicInfo.nationality}
+                    {previewData?.basicInfo.nationality}
                   </p>
                 </div>
               </div>
@@ -189,7 +176,7 @@ const Step7 = () => {
                 </label>
                 <p className="flex items-start gap-2 mt-1 font-medium">
                   <MapPin className="h-4 w-4 text-blue-500 mt-0.5" />
-                  {temporaryEmployeeData.data.basicInfo.homeAddress}
+                  {previewData?.basicInfo.homeAddress}
                 </p>
               </div>
             </CardContent>
@@ -210,10 +197,7 @@ const Step7 = () => {
                     Employee ID
                   </label>
                   <p className="mt-1 font-mono font-medium">
-                    {
-                      temporaryEmployeeData.data.employeeDetails
-                        .employeeIdNumber
-                    }
+                    {previewData?.employeeDetails.employeeIdNumber}
                   </p>
                 </div>
                 <div>
@@ -222,9 +206,7 @@ const Step7 = () => {
                   </label>
                   <p className="flex items-center gap-2 mt-1 font-medium">
                     <Calendar className="h-4 w-4 text-indigo-500" />
-                    {formatDate(
-                      temporaryEmployeeData.data.employeeDetails.dateOfJoining
-                    )}
+                    {formatDate(previewData?.employeeDetails.dateOfJoining)}
                   </p>
                 </div>
               </div>
@@ -234,7 +216,7 @@ const Step7 = () => {
                 </label>
                 <p className="flex items-center gap-2 mt-1 font-medium">
                   <Building className="h-4 w-4 text-indigo-500" />
-                  {temporaryEmployeeData.data.employeeDetails.department}
+                  {previewData?.employeeDetails.department}
                 </p>
               </div>
             </CardContent>
@@ -254,32 +236,29 @@ const Step7 = () => {
                   Contact Person
                 </label>
                 <p className="mt-1 font-medium">
-                  {temporaryEmployeeData.data.contactInformation.name}
+                  {previewData?.contactInformation.name}
                 </p>
                 <p className="text-sm text-slate-500">
-                  ({temporaryEmployeeData.data.contactInformation.relationship})
+                  ({previewData?.contactInformation.relationship})
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-3">
                 {/* <div className="flex items-center gap-2 p-2 rounded-md bg-purple-50">
                   <Phone className="h-4 w-4 text-purple-500" />
                   <span className="font-medium">
-                    {temporaryEmployeeData.data.contactInformation.phoneNumber}
+                    {previewData?.contactInformation.phoneNumber}
                   </span>
                 </div> */}
                 <div className="flex items-center gap-2 p-2 rounded-md bg-purple-50">
                   <Phone className="h-4 w-4 text-purple-500" />
                   <span className="font-medium">
-                    {
-                      temporaryEmployeeData.data.contactInformation
-                        .emergencyPhoneNumber
-                    }
+                    {previewData?.contactInformation.emergencyPhoneNumber}
                   </span>
                 </div>
                 {/* <div className="flex items-center gap-2 p-2 rounded-md bg-purple-50">
                   <Mail className="h-4 w-4 text-purple-500" />
                   <span className="font-medium">
-                    {temporaryEmployeeData.data.contactInformation.email}
+                    {previewData?.contactInformation.email}
                   </span>
                 </div> */}
               </div>
@@ -301,7 +280,7 @@ const Step7 = () => {
                     Bank Name
                   </label>
                   <p className="mt-1 font-medium">
-                    {temporaryEmployeeData.data.financialInformation.bankName}
+                    {previewData?.financialInformation.bankName}
                   </p>
                 </div>
                 <div>
@@ -309,10 +288,7 @@ const Step7 = () => {
                     Account Holder
                   </label>
                   <p className="mt-1 font-medium">
-                    {
-                      temporaryEmployeeData.data.financialInformation
-                        .accountHolder
-                    }
+                    {previewData?.financialInformation.accountHolder}
                   </p>
                 </div>
               </div>
@@ -321,10 +297,7 @@ const Step7 = () => {
                   Account Number
                 </label>
                 <p className="mt-1 font-mono font-medium">
-                  {
-                    temporaryEmployeeData.data.financialInformation
-                      .accountNumber
-                  }
+                  {previewData?.financialInformation.accountNumber}
                 </p>
               </div>
               <div>
@@ -332,7 +305,7 @@ const Step7 = () => {
                   Bank Address
                 </label>
                 <p className="mt-1 font-medium">
-                  {temporaryEmployeeData.data.financialInformation.bankAddress}
+                  {previewData?.financialInformation.bankAddress}
                 </p>
               </div>
             </CardContent>
@@ -354,10 +327,7 @@ const Step7 = () => {
                   Tax ID Number
                 </label>
                 <p className="mt-1 font-mono font-medium">
-                  {
-                    temporaryEmployeeData.data.identificationDocuments
-                      .taxIdNumber
-                  }
+                  {previewData?.identificationDocuments?.taxIdNumber}
                 </p>
               </div>
               <div className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
@@ -365,10 +335,7 @@ const Step7 = () => {
                   Insurance Number
                 </label>
                 <p className="mt-1 font-mono font-medium">
-                  {
-                    temporaryEmployeeData.data.identificationDocuments
-                      .insuranceNumber
-                  }
+                  {previewData?.identificationDocuments.insuranceNumber}
                 </p>
               </div>
               <div className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
@@ -376,10 +343,7 @@ const Step7 = () => {
                   Social Security Number
                 </label>
                 <p className="mt-1 font-mono font-medium">
-                  {
-                    temporaryEmployeeData.data.identificationDocuments
-                      .socialSecurityNumber
-                  }
+                  {previewData?.identificationDocuments.socialSecurityNumber}
                 </p>
               </div>
               <div className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
@@ -388,8 +352,7 @@ const Step7 = () => {
                 </label>
                 <p className="mt-1 font-medium">
                   {formatDate(
-                    temporaryEmployeeData.data.identificationDocuments
-                      .visaExpiryDate
+                    previewData?.identificationDocuments.visaExpiryDate
                   )}
                 </p>
               </div>
@@ -401,10 +364,7 @@ const Step7 = () => {
                   variant="link"
                   className="mt-1 p-0 h-auto font-medium text-blue-600 hover:text-blue-800"
                   onClick={() =>
-                    window.open(
-                      temporaryEmployeeData.data.passportOrNationalIdUrl,
-                      "_blank"
-                    )
+                    window.open(previewData?.passportOrNationalIdUrl, "_blank")
                   }
                 >
                   View Document
@@ -425,7 +385,7 @@ const Step7 = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {temporaryEmployeeData.data.educationalCertificatesUrl.map(
+              {previewData?.educationalCertificatesUrl.map(
                 (url: string, index: number) => (
                   <Button
                     key={index}
@@ -450,7 +410,7 @@ const Step7 = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {temporaryEmployeeData.data.professionalCertificatesUrl.map(
+              {previewData?.professionalCertificatesUrl.map(
                 (url: string, index: number) => (
                   <Button
                     key={index}
@@ -479,16 +439,11 @@ const Step7 = () => {
                 variant="outline"
                 className="w-full justify-start border border-purple-200 hover:bg-purple-50 hover:text-purple-700 transition-colors"
                 onClick={() =>
-                  window.open(
-                    temporaryEmployeeData.data.signedContractPaperworkUrl,
-                    "_blank"
-                  )
+                  window.open(previewData?.signedContractPaperworkUrl, "_blank")
                 }
               >
                 <Download className="h-4 w-4 mr-2" />
-                {getDocumentName(
-                  temporaryEmployeeData.data.signedContractPaperworkUrl
-                )}
+                {getDocumentName(previewData?.signedContractPaperworkUrl)}
               </Button>
             </CardContent>
           </Card>
@@ -499,12 +454,8 @@ const Step7 = () => {
           <CardContent className="pt-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-600">
               <div>
-                <p>
-                  Profile created: {formatDate(temporaryEmployeeData.createdAt)}
-                </p>
-                <p>
-                  Last updated: {formatDate(temporaryEmployeeData.updatedAt)}
-                </p>
+                <p>Profile created: {formatDate(creationDate?.createdAt)}</p>
+                <p>Last updated: {formatDate(creationDate?.updatedAt)}</p>
               </div>
               <div className="flex gap-2">
                 <Button
