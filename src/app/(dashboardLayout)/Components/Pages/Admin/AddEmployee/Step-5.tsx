@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { benefitEnrollmentConstant } from "./constants";
+import { benefitEnrollmentConstant } from "../../../Shared/constants";
 import { financialInformationSchema } from "@/schema/employee.schema";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TFinancialInformation } from "@/types";

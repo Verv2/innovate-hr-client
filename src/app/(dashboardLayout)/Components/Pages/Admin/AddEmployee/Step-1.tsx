@@ -29,7 +29,7 @@ import {
   genderConstant,
   maritalStatusConstant,
   nationalityConstant,
-} from "./constants";
+} from "../../../Shared/constants";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TBasicInfo } from "@/types";

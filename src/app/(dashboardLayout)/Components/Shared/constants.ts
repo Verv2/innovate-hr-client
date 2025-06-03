@@ -34,6 +34,13 @@ export const benefitEnrollmentConstant = [
   { value: "PENSION", label: "Person" },
 ];
 
+export const userRoles = [
+  // { value: "SUPER_ADMIN", label: "Super Admin" },
+  { value: "ADMIN", label: "Admin" },
+  { value: "MANAGER", label: "Manager" },
+  { value: "EMPLOYEE", label: "Employee" },
+];
+
 export const nationalityConstant = [
   {
     num_code: "4",

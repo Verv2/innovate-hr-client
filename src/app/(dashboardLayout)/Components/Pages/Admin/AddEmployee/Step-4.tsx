@@ -22,7 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { departmentConstant, employmentTypeConstant } from "./constants";
+import {
+  departmentConstant,
+  employmentTypeConstant,
+} from "../../../Shared/constants";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
 import { employeeDetailsSchema } from "@/schema/employee.schema";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";

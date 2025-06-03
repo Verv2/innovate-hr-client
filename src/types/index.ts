@@ -66,3 +66,19 @@ export type TFullTemporaryData = {
   recentPhotographUrl: string;
   step: number;
 };
+
+type TInvitationEmployee = {
+  id: string;
+  userId: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  additionalDocuments: { recentPhotograph?: string };
+};
+export type TInvitationData = {
+  id: string;
+  email: string;
+  role: string;
+  status: string;
+  employees?: TInvitationEmployee;
+};

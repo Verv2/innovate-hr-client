@@ -2,7 +2,7 @@
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import LayoutSidebar from "./Components/Shared/LayoutSidebar";
-import TopNavbar from "./Components/Shared/TopNavbar";
+import TopNavbar from "./Components/Shared/TopNavbar/TopNavbar";
 
 const DashboardLayout2 = ({ children }: { children: React.ReactNode }) => {
   return (
