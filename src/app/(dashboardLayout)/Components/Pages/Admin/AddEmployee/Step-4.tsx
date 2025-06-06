@@ -30,7 +30,6 @@ import { DateTimePicker } from "@/components/extension/datetime-picker";
 import { employeeDetailsSchema } from "@/schema/employee.schema";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TEmployeeDetails } from "@/types";
-import { useEffect } from "react";
 
 type TStep4Props = {
   handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
@@ -45,26 +44,39 @@ const Step4 = ({
   employeeDetails,
   onRefetch,
 }: TStep4Props) => {
+  const defaultValues: Omit<
+    z.infer<typeof employeeDetailsSchema>,
+    "dateOfJoining"
+  > & {
+    dateOfJoining: Date | undefined;
+  } = {
+    employeeIdNumber: employeeDetails?.employeeIdNumber ?? "",
+    jobTitle: employeeDetails?.jobTitle ?? "",
+    department: employeeDetails?.department ?? "",
+    dateOfJoining: employeeDetails?.dateOfJoining
+      ? new Date(employeeDetails.dateOfJoining)
+      : undefined,
+    employmentType: employeeDetails?.employmentType ?? "",
+  };
+
   const form = useForm<z.infer<typeof employeeDetailsSchema>>({
     resolver: zodResolver(employeeDetailsSchema),
-    defaultValues: {
-      dateOfJoining: undefined,
-    },
+    defaultValues,
   });
 
-  const { reset } = form;
+  // const { reset } = form;
 
-  useEffect(() => {
-    if (employeeDetails) {
-      reset({
-        ...employeeDetails,
-        // Ensure dateOfBirth is in correct format if it's a Date object
-        dateOfJoining: employeeDetails.dateOfJoining
-          ? new Date(employeeDetails.dateOfJoining)
-          : undefined,
-      });
-    }
-  }, [employeeDetails, reset]);
+  // useEffect(() => {
+  //   if (employeeDetails) {
+  //     reset({
+  //       ...employeeDetails,
+  //       // Ensure dateOfBirth is in correct format if it's a Date object
+  //       dateOfJoining: employeeDetails.dateOfJoining
+  //         ? new Date(employeeDetails.dateOfJoining)
+  //         : undefined,
+  //     });
+  //   }
+  // }, [employeeDetails, reset]);
 
   const onSubmit = async (values: z.infer<typeof employeeDetailsSchema>) => {
     try {

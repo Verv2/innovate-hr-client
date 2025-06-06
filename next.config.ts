@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
   // images: {
   //   domains: ["localhost", "res.cloudinary.com", "i.pinimg.com"],
   // },

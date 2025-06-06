@@ -26,7 +26,6 @@ import { benefitEnrollmentConstant } from "../../../Shared/constants";
 import { financialInformationSchema } from "@/schema/employee.schema";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TFinancialInformation } from "@/types";
-import { useEffect } from "react";
 
 type TStep5Props = {
   handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
@@ -41,20 +40,31 @@ const Step5 = ({
   financialInformation,
   onRefetch,
 }: TStep5Props) => {
+  const defaultValues: z.infer<typeof financialInformationSchema> = {
+    bankName: financialInformation?.bankName ?? "",
+    accountNumber: financialInformation?.accountNumber ?? "",
+    accountHolder: financialInformation?.accountHolder ?? "",
+    bankAddress: financialInformation?.bankAddress ?? "",
+    sortCode: financialInformation?.sortCode ?? "",
+    ibanOrSwfit: financialInformation?.ibanOrSwfit ?? "",
+    benefitEnrollment: financialInformation?.benefitEnrollment ?? "",
+  };
+
   const form = useForm<z.infer<typeof financialInformationSchema>>({
     resolver: zodResolver(financialInformationSchema),
+    defaultValues,
   });
 
   // form reset
-  const { reset } = form;
+  // const { reset } = form;
 
-  useEffect(() => {
-    if (financialInformation) {
-      reset({
-        ...financialInformation,
-      });
-    }
-  }, [financialInformation, reset]);
+  // useEffect(() => {
+  //   if (financialInformation) {
+  //     reset({
+  //       ...financialInformation,
+  //     });
+  //   }
+  // }, [financialInformation, reset]);
 
   const onSubmit = async (
     values: z.infer<typeof financialInformationSchema>

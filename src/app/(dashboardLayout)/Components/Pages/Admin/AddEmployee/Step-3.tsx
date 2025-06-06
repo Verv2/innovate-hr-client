@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,6 +46,21 @@ const Step3 = ({
     identificationDocuments
   );
 
+  const defaultValues: Omit<
+    z.infer<typeof identificationDocumentsSchema>,
+    "visaExpiryDate"
+  > & {
+    visaExpiryDate: Date | undefined;
+  } = {
+    passportOrNationalId: identificationDocuments?.passportOrNationalId ?? "",
+    insuranceNumber: identificationDocuments?.insuranceNumber ?? "",
+    socialSecurityNumber: identificationDocuments?.socialSecurityNumber ?? "",
+    visaExpiryDate: identificationDocuments?.visaExpiryDate
+      ? new Date(identificationDocuments.visaExpiryDate)
+      : undefined,
+    taxIdNumber: identificationDocuments?.taxIdNumber ?? "",
+  };
+
   const [files, setFiles] = useState<File[] | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
 
@@ -57,21 +72,19 @@ const Step3 = ({
 
   const form = useForm<z.infer<typeof identificationDocumentsSchema>>({
     resolver: zodResolver(identificationDocumentsSchema),
-    defaultValues: {
-      visaExpiryDate: undefined,
-    },
+    defaultValues,
   });
 
   // form reset
-  const { reset } = form;
+  // const { reset } = form;
 
-  useEffect(() => {
-    if (identificationDocuments) {
-      reset({
-        ...identificationDocuments,
-      });
-    }
-  }, [identificationDocuments, reset]);
+  // useEffect(() => {
+  //   if (identificationDocuments) {
+  //     reset({
+  //       ...identificationDocuments,
+  //     });
+  //   }
+  // }, [identificationDocuments, reset]);
 
   const onSubmit = async (
     values: z.infer<typeof identificationDocumentsSchema>

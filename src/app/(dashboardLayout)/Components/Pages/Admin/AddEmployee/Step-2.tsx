@@ -20,7 +20,7 @@ import { PhoneInput } from "@/components/extension/phone-input";
 import { contactInformationFormSchema } from "@/schema/employee.schema";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TContactInformation } from "@/types";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 
 type TStep2Props = {
   handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
@@ -35,20 +35,30 @@ const Step2 = ({
   contactInformation,
   onRefetch,
 }: TStep2Props) => {
+  const defaultValues: z.infer<typeof contactInformationFormSchema> = {
+    phoneNumber: contactInformation?.phoneNumber ?? "",
+    email: contactInformation?.email ?? "",
+    residentialAddress: contactInformation?.residentialAddress ?? "",
+    name: contactInformation?.name ?? "",
+    relationship: contactInformation?.relationship ?? "",
+    emergencyPhoneNumber: contactInformation?.emergencyPhoneNumber ?? "",
+  };
+
   const form = useForm<z.infer<typeof contactInformationFormSchema>>({
     resolver: zodResolver(contactInformationFormSchema),
+    defaultValues,
   });
 
   // form reset
-  const { reset } = form;
+  // const { reset } = form;
 
-  useEffect(() => {
-    if (contactInformation) {
-      reset({
-        ...contactInformation,
-      });
-    }
-  }, [contactInformation, reset]);
+  // useEffect(() => {
+  //   if (contactInformation) {
+  //     reset({
+  //       ...contactInformation,
+  //     });
+  //   }
+  // }, [contactInformation, reset]);
 
   const onSubmit = async (
     values: z.infer<typeof contactInformationFormSchema>

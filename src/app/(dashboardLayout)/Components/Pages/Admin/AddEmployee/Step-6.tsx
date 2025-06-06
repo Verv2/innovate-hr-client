@@ -22,7 +22,6 @@ import {
   FileUploaderItem,
 } from "@/components/extension/file-upload";
 import { additionalDocumentsSchema } from "@/schema/employee.schema";
-import { useAddTemporaryEmployee } from "@/hooks/admin.hooks";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 type TStep6Props = {

@@ -23,8 +23,6 @@ import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 const steps = [1, 2, 3, 4, 5, 6, 7] as const;
 
-const FINAL_FORM_STEP = 6;
-
 const AddEmployee = () => {
   const { mutateAsync: handleUseAddTemporaryEmployee, isPending } =
     useAddTemporaryEmployee();
@@ -35,12 +33,26 @@ const AddEmployee = () => {
   } = useGetTemporaryEmployee();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [highestVisitedStep, setHighestVisitedStep] = useState(1);
 
   const temporaryEmployeeData = employeeData?.data;
 
   const backendStep = temporaryEmployeeData?.step ?? 1;
+  const maxAllowedStep = Math.max(backendStep, highestVisitedStep);
 
-  const maxAllowedStep = backendStep >= FINAL_FORM_STEP ? 7 : backendStep;
+  // Go to next step
+  const handleNextStep = () => {
+    setCurrentStep((prev) => {
+      const next = prev + 1;
+      setHighestVisitedStep((visited) => Math.max(visited, next));
+      return next;
+    });
+  };
+
+  // Go to previous step
+  const handlePrevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+  };
 
   console.log("temporary", temporaryEmployeeData);
 
@@ -148,7 +160,7 @@ const AddEmployee = () => {
         <Button
           variant="outline"
           className="w-32"
-          onClick={() => setCurrentStep((prev) => prev - 1)}
+          onClick={handlePrevStep}
           disabled={currentStep === 1}
         >
           Prev step
@@ -156,8 +168,7 @@ const AddEmployee = () => {
         <Button
           variant="outline"
           className="w-32"
-          onClick={() => setCurrentStep((prev) => prev + 1)}
-          // disabled={currentStep >= steps.length}
+          onClick={handleNextStep}
           disabled={
             currentStep >= steps.length || currentStep >= maxAllowedStep
           }

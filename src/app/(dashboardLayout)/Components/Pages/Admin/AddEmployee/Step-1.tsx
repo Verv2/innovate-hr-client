@@ -33,7 +33,6 @@ import {
 import { DateTimePicker } from "@/components/extension/datetime-picker";
 import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TBasicInfo } from "@/types";
-import { useEffect } from "react";
 
 type TStep1Props = {
   handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;
@@ -48,26 +47,43 @@ const Step1 = ({
   basicInfo,
   onRefetch,
 }: TStep1Props) => {
+  const defaultValues: Omit<
+    z.infer<typeof employeeFormSchema>,
+    "dateOfBirth"
+  > & {
+    dateOfBirth: Date | undefined;
+  } = {
+    firstName: basicInfo?.firstName ?? "",
+    middleName: basicInfo?.middleName ?? "",
+    lastName: basicInfo?.lastName ?? "",
+    dateOfBirth: basicInfo?.dateOfBirth
+      ? new Date(basicInfo.dateOfBirth)
+      : undefined,
+    gender: basicInfo?.gender ?? "",
+    homeAddress: basicInfo?.homeAddress ?? "",
+    nationality: basicInfo?.nationality ?? "",
+    maritalStatus: basicInfo?.maritalStatus ?? "",
+  };
+
   const form = useForm<z.infer<typeof employeeFormSchema>>({
     resolver: zodResolver(employeeFormSchema),
-    defaultValues: {
-      dateOfBirth: undefined,
-    },
+    defaultValues,
   });
 
-  const { reset } = form;
+  // const { reset } = form;
 
-  useEffect(() => {
-    if (basicInfo) {
-      reset({
-        ...basicInfo,
-        // Ensure dateOfBirth is in correct format if it's a Date object
-        dateOfBirth: basicInfo.dateOfBirth
-          ? new Date(basicInfo.dateOfBirth)
-          : undefined,
-      });
-    }
-  }, [basicInfo, reset]);
+  // useEffect(() => {
+  //   if (basicInfo) {
+  //     console.log("basicInfo.gender 👉", basicInfo.gender);
+  //     reset({
+  //       ...basicInfo,
+  //       // Ensure dateOfBirth is in correct format if it's a Date object
+  //       dateOfBirth: basicInfo.dateOfBirth
+  //         ? new Date(basicInfo.dateOfBirth)
+  //         : undefined,
+  //     });
+  //   }
+  // }, [basicInfo, reset]);
 
   const onSubmit = async (values: z.infer<typeof employeeFormSchema>) => {
     try {
@@ -189,7 +205,8 @@ const Step1 = ({
                     <FormLabel>Gender</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      // defaultValue={field.value}
+                      value={field.value ?? ""}
                     >
                       <FormControl className="w-full">
                         <SelectTrigger>

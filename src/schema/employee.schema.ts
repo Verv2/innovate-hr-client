@@ -2,13 +2,17 @@ import { z } from "zod";
 
 export const employeeFormSchema = z.object({
   firstName: z.string().min(1),
-  middleName: z.string().min(1).optional(),
+  middleName: z.string().min(1).or(z.literal("")),
   lastName: z.string().min(1),
   dateOfBirth: z.coerce.date(),
-  gender: z.string(),
-  homeAddress: z.string().min(1),
-  nationality: z.string(),
-  maritalStatus: z.string().optional(),
+  gender: z.string().min(1, "Gender is required"),
+  homeAddress: z.string().min(1, "Home Address is required"),
+  nationality: z.string().min(1, "Nationality is required"),
+  maritalStatus: z
+    .string()
+    .min(1, "Marital Status is required")
+    .optional()
+    .or(z.literal("")),
 });
 
 export const contactInformationFormSchema = z.object({
