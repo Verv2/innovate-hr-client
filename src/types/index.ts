@@ -1,9 +1,10 @@
-export type TRole = "ADMIN" | "SUPER-ADMIN" | "EMPLOYEE";
+export type TRole = "ADMIN" | "SUPER-ADMIN" | "EMPLOYEE" | "MANAGER";
 
 export interface IUserContext {
   id: string;
   email: string;
   role: TRole;
+  needPasswordChange: boolean;
   //   profilePhoto: string;
   //   isProfileUpdated: boolean;
   //   status: "ACTIVE" | "BLOCKED" | "DELETED";

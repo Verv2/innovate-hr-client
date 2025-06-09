@@ -19,7 +19,7 @@ const Login = () => {
   const router = useRouter();
   const redirect = searchParams.get("redirect");
 
-  const { setIsLoading: userLoading } = useUser();
+  const { user: userData, setIsLoading: userLoading } = useUser();
 
   const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
 
@@ -39,14 +39,16 @@ const Login = () => {
 
   useEffect(() => {
     if (!isPending && isSuccess) {
-      if (redirect) {
-        console.log("Redirect", redirect);
+      if (userData?.needPasswordChange) {
+        router.push("/dashboard/change-password");
+      } else if (redirect) {
         router.push(redirect);
-      } else {
-        router.push("/dashboard/admin");
+      } else if (userData) {
+        const role = userData.role;
+        router.push(`/dashboard/${role.toLowerCase()}`);
       }
     }
-  }, [isPending, isSuccess, redirect, router]);
+  }, [isPending, isSuccess, redirect, router, userData]);
 
   return (
     <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">

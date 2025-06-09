@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useChangePassword } from "@/hooks/auth.hooks";
 import { passwordChangeSchema } from "@/schema/changePassword.schema";
+import { logout } from "@/services/AuthService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -42,10 +43,11 @@ const ChangePassword = () => {
       oldPassword: data.oldPassword,
       newPassword: data.newPassword,
     };
-    console.log("Password change data:", passwordData);
+
     try {
       await handleChangePassword(passwordData);
-      router.push("/dashboard/admin");
+      await logout(); // ✅ Clear cookies
+      router.push("/login");
     } catch (error) {
       console.error("Error changing password", error);
     }

@@ -40,7 +40,6 @@ const LayoutSidebar = () => {
     item.roles.includes(currentUserRole)
   );
 
-  console.log("User From Dashboard", userData);
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
@@ -57,7 +56,7 @@ const LayoutSidebar = () => {
                         href={item.url}
                         className={cn(
                           "flex items-center gap-2 p-2 rounded-md hover:bg-muted",
-                          active && "bg-muted font-semibold text-primary"
+                          active && "bg-violet-100 font-semibold text-primary"
                         )}
                       >
                         <item.icon className="w-4 h-4" />

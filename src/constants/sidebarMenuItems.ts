@@ -31,6 +31,12 @@ export const sidebarMenuItems: MenuItem[] = [
     roles: ["EMPLOYEE"],
   },
   {
+    title: "Home Manager",
+    url: "/dashboard/manager",
+    icon: Home,
+    roles: ["MANAGER"],
+  },
+  {
     title: "Change Password",
     url: "/dashboard/change-password",
     icon: RotateCcwKey,

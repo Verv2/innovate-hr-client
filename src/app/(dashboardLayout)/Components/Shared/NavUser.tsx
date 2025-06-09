@@ -23,6 +23,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { logout } from "@/services/AuthService";
 
 const NavUser = ({
   user,
@@ -34,6 +35,14 @@ const NavUser = ({
   };
 }) => {
   const { isMobile } = useSidebar();
+  const handleLogout = () => {
+    logout();
+    // userLoading(true);
+
+    // if (protectedRoutes.some((route) => pathName.match(route))) {
+    //   router.push("/");
+    // }
+  };
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -95,7 +104,7 @@ const NavUser = ({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleLogout()}>
               <LogOut />
               Log out
             </DropdownMenuItem>
