@@ -10,9 +10,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useChangePassword } from "@/hooks/auth.hooks";
 import { passwordChangeSchema } from "@/schema/changePassword.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,28 +25,30 @@ const ChangePassword = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
+
+  const { mutateAsync: handleChangePassword, isPending } = useChangePassword();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
+    formState: { errors },
   } = useForm<PasswordChangeForm>({
     resolver: zodResolver(passwordChangeSchema),
   });
 
   const onSubmit = async (data: PasswordChangeForm) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     const passwordData = {
       oldPassword: data.oldPassword,
       newPassword: data.newPassword,
     };
     console.log("Password change data:", passwordData);
-    // Reset form after successful submission
-    reset();
-    alert("Password changed successfully!");
+    try {
+      await handleChangePassword(passwordData);
+      router.push("/dashboard/admin");
+    } catch (error) {
+      console.error("Error changing password", error);
+    }
   };
 
   return (
@@ -193,9 +197,9 @@ const ChangePassword = () => {
             <Button
               type="submit"
               className="w-full btn-violet"
-              disabled={isSubmitting}
+              disabled={isPending}
             >
-              {isSubmitting ? "Changing Password..." : "Change Password"}
+              {isPending ? "Changing Password..." : "Change Password"}
             </Button>
           </form>
         </CardContent>

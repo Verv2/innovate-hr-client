@@ -31,6 +31,26 @@ export const loginUser = async (userData: FieldValues) => {
   }
 };
 
+export const changePassword = async (userData: FieldValues) => {
+  try {
+    const { data } = await axiosInstance.post(
+      "/auth/change-password",
+      userData
+    );
+
+    return data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+
+    console.log(axiosError.response?.data || axiosError.message);
+    const errorMessage =
+      (axiosError.response?.data as { message?: string })?.message ||
+      axiosError.message;
+
+    throw new Error(errorMessage);
+  }
+};
+
 export const getCurrentUser = async () => {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken")?.value;

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -10,38 +12,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 import NavUser from "./NavUser";
 import { useUser } from "@/context/user.provider";
-
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "/dashboard/admin",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "/",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-];
+import { sidebarMenuItems } from "@/constants/sidebarMenuItems";
+import { TRole } from "@/types";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const user = {
   name: "UserName",
@@ -50,7 +27,18 @@ const user = {
 };
 
 const LayoutSidebar = () => {
-  const userData = useUser();
+  const { user: userData } = useUser();
+  const pathname = usePathname();
+
+  if (!userData?.role) {
+    return null; // or loading UI, or error message
+  }
+
+  const currentUserRole: TRole = userData?.role;
+
+  const filteredItems = sidebarMenuItems.filter((item) =>
+    item.roles.includes(currentUserRole)
+  );
 
   console.log("User From Dashboard", userData);
   return (
@@ -60,16 +48,25 @@ const LayoutSidebar = () => {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {filteredItems.map((item) => {
+                const active = pathname === item.url;
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={item.url}
+                        className={cn(
+                          "flex items-center gap-2 p-2 rounded-md hover:bg-muted",
+                          active && "bg-muted font-semibold text-primary"
+                        )}
+                      >
+                        <item.icon className="w-4 h-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

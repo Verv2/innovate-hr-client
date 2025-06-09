@@ -12,18 +12,23 @@ import {
 import { useGetAllUsers } from "@/hooks/user.hooks";
 import { useRouter } from "next/navigation";
 import SendInvitationForm from "./SendInvitationForm";
+import { useUser } from "@/context/user.provider";
 
 const TopNavbar = () => {
-  const {
-    data: usersData = [],
-    // isLoading: listingDataLoading,
-    isSuccess: userDataSuccess,
-  } = useGetAllUsers({ status: "IN_PROGRESS" });
+  const { user: userData } = useUser();
+  const shouldFetch =
+    userData?.role === "SUPER_ADMIN" ||
+    userData?.role === "ADMIN" ||
+    userData?.role === "MANAGER";
 
-  // console.log(
-  //   "usersData from top navbar",
-  //   usersData[0]?.employees?.additionalDocuments?.recentPhotograph
-  // );
+  console.log("From TopNavbar", userData);
+
+  const { data: usersData = [], isSuccess: userDataSuccess } = useGetAllUsers(
+    {
+      status: "IN_PROGRESS",
+    },
+    { enabled: shouldFetch }
+  );
 
   const router = useRouter();
   return (

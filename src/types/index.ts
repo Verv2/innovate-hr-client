@@ -1,7 +1,9 @@
+export type TRole = "ADMIN" | "SUPER-ADMIN" | "EMPLOYEE";
+
 export interface IUserContext {
   id: string;
   email: string;
-  role: "SUPER_ADMIN" | "ADMIN" | "LANDLORD" | "TENANT";
+  role: TRole;
   //   profilePhoto: string;
   //   isProfileUpdated: boolean;
   //   status: "ACTIVE" | "BLOCKED" | "DELETED";
@@ -75,6 +77,7 @@ type TInvitationEmployee = {
   lastName: string;
   additionalDocuments: { recentPhotograph?: string };
 };
+
 export type TInvitationData = {
   id: string;
   email: string;
