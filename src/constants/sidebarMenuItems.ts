@@ -7,6 +7,7 @@ import {
   Settings,
   ShieldCheck,
   RotateCcwKey,
+  UserRoundPen,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -65,6 +66,12 @@ export const sidebarMenuItems: MenuItem[] = [
     url: "/settings",
     icon: Settings,
     roles: ["ADMIN", "SUPER-ADMIN"],
+  },
+  {
+    title: "Profile",
+    url: "/dashboard/profile",
+    icon: UserRoundPen,
+    roles: ["ADMIN", "SUPER-ADMIN", "EMPLOYEE"],
   },
   {
     title: "Super Admin Panel",
