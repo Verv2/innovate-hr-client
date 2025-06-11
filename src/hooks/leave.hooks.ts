@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { sendLeaveRequest } from "@/services/LeaveService";
-import { useMutation } from "@tanstack/react-query";
+import { getAllLeaveRequest, sendLeaveRequest } from "@/services/LeaveService";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -14,5 +14,12 @@ export const useSendLeaveRequest = () => {
     onError: (error) => {
       toast.error(error.message);
     },
+  });
+};
+
+export const useGetAllLeaveRequest = (queryParams: Record<string, string>) => {
+  return useQuery({
+    queryKey: ["GET_ALL_LEAVE_REQUEST", queryParams],
+    queryFn: async () => await getAllLeaveRequest(queryParams),
   });
 };

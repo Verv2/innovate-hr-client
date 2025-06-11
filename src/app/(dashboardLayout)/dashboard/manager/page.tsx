@@ -1,8 +1,11 @@
+import DashboardHome from "../../Components/Shared/DashboardHome/DashboardHome";
+
 const ManagerPage = () => {
   return (
-    <div>
+    <>
       <h2>This is manager</h2>
-    </div>
+      <DashboardHome />
+    </>
   );
 };
 
