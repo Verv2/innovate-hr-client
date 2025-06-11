@@ -1,4 +1,4 @@
-export type TRole = "ADMIN" | "SUPER-ADMIN" | "EMPLOYEE" | "MANAGER";
+export type TRole = "ADMIN" | "SUPER_ADMIN" | "EMPLOYEE" | "MANAGER";
 
 export interface IUserContext {
   id: string;
@@ -179,4 +179,10 @@ export type TUserData = {
   needPasswordChange: boolean;
   status: string;
   employees?: TEmployee;
+};
+
+export type TLeaveRequest = {
+  leaveType: string;
+  leaveDates: string[];
+  reason?: string;
 };

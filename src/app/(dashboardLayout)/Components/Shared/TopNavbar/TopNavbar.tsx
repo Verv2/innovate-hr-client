@@ -10,9 +10,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useGetAllUsers } from "@/hooks/user.hooks";
-import { useRouter } from "next/navigation";
 import SendInvitationForm from "./SendInvitationForm";
 import { useUser } from "@/context/user.provider";
+import LeaveRequestModal from "./LeaveRequestModal";
 
 const TopNavbar = () => {
   const { user: userData } = useUser();
@@ -30,15 +30,16 @@ const TopNavbar = () => {
     { enabled: shouldFetch }
   );
 
-  const router = useRouter();
+  // const router = useRouter();
   return (
     <div className="flex justify-center items-center gap-5">
-      <Button
+      {/* <Button
         className="btn-violet w-[170px]"
         onClick={() => router.push("/dashboard/admin/add-employee")}
       >
         Add New Employee
-      </Button>
+      </Button> */}
+      <LeaveRequestModal />
 
       <Dialog>
         <DialogTrigger asChild>
