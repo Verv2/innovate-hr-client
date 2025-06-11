@@ -113,7 +113,6 @@ const LeaveRequestModal = () => {
                         ))}
                       </SelectContent>
                     </Select>
-
                     <FormMessage />
                   </FormItem>
                 )}
