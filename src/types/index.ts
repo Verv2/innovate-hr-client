@@ -5,9 +5,7 @@ export interface IUserContext {
   email: string;
   role: TRole;
   needPasswordChange: boolean;
-  //   profilePhoto: string;
-  //   isProfileUpdated: boolean;
-  //   status: "ACTIVE" | "BLOCKED" | "DELETED";
+  employees: TEmployee;
 }
 
 export type TBasicInfo = {
@@ -185,4 +183,17 @@ export type TLeaveRequest = {
   leaveType: string;
   leaveDates: string[];
   reason?: string;
+};
+
+export type TRequestedLeaveUser = {
+  createdAt: string;
+  updatedAt: string;
+  employeeId: string;
+  id: string;
+  isOngoing: boolean;
+  leaveDates: string[];
+  leaveType: string;
+  reason: string;
+  status: string;
+  employee: TEmployee;
 };

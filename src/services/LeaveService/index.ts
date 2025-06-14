@@ -24,13 +24,25 @@ export const sendLeaveRequest = async (leaveRequestData: FieldValues) => {
   }
 };
 
-export const getAllLeaveRequest = async (
-  queryParams: Record<string, string>
-) => {
+export const getAllLeaveRequest = async () => {
   try {
-    const { data } = await axiosInstance.get("/leave", {
-      params: queryParams,
-    });
+    const { data } = await axiosInstance.get("/leave");
+
+    return data.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.log(axiosError.response?.data || axiosError.message);
+    const errorMessage =
+      (axiosError.response?.data as { message?: string })?.message ||
+      axiosError.message;
+
+    throw new Error(errorMessage);
+  }
+};
+
+export const getAllLeaveToday = async () => {
+  try {
+    const { data } = await axiosInstance.get("/leave/leaves-on-today");
 
     return data.data;
   } catch (error) {
