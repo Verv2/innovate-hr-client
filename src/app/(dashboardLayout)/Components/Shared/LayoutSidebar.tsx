@@ -19,22 +19,45 @@ import { TRole } from "@/types";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-
-const user = {
-  name: "UserName",
-  email: "m@example.com",
-  avatar: "https://avatar.iran.liara.run/public",
-};
+import SidebarLoading from "@/app/(commonLayout)/Components/UI/Loading/SidebarLoading";
 
 const LayoutSidebar = () => {
-  const { user: userData } = useUser();
+  const { user: userData, isLoading } = useUser();
   const pathname = usePathname();
 
+  if (isLoading) {
+    return <SidebarLoading />;
+  }
+
   if (!userData?.role) {
-    return null; // or loading UI, or error message
+    return null;
   }
 
   const currentUserRole: TRole = userData?.role;
+
+  let user: { name: string; email: string; avatar: string } | null = null;
+
+  if (userData.role === "SUPER_ADMIN") {
+    user = {
+      name: "Super User",
+      email: userData.email,
+      avatar: "https://avatar.iran.liara.run/public",
+    };
+  } else if (!userData.employees) {
+    user = {
+      name: "Setup Employee",
+      email: userData.email,
+      avatar: "https://avatar.iran.liara.run/public",
+    };
+  } else {
+    user = {
+      name: userData.employees.firstName,
+      email: userData.email,
+      avatar:
+        userData.employees.additionalDocuments?.recentPhotograph ||
+        "https://avatar.iran.liara.run/public",
+    };
+  }
 
   const filteredItems = sidebarMenuItems.filter((item) =>
     item.roles.includes(currentUserRole)

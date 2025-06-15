@@ -25,8 +25,8 @@ import {
   getEmploymentTypeLabel,
 } from "@/lib/utils";
 import { useAddEmployee } from "@/hooks/admin.hooks";
-import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { useRouter } from "next/navigation";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 type TStep7Props = {
   previewData: TFullTemporaryData;

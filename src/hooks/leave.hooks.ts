@@ -32,6 +32,6 @@ export const useGetAllLeaveToday = () => {
   return useQuery({
     queryKey: ["GET_ALL_LEAVE_TODAY"],
     queryFn: async () => await getAllLeaveToday(),
-    enabled: false, // ⛔️ prevents auto-fetch on mount
+    enabled: false,
   });
 };

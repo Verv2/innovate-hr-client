@@ -11,6 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
+import Loading from "../../UI/Loading/Loading";
 
 type TLogin = z.infer<typeof loginSchema>;
 
@@ -49,6 +50,10 @@ const Login = () => {
       }
     }
   }, [isPending, isSuccess, redirect, router, userData]);
+
+  if (isPending) {
+    return <Loading />;
+  }
 
   return (
     <section className="flex min-h-screen bg-zinc-50 px-4 py-16 md:py-32 dark:bg-transparent">

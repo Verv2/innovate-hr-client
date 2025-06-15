@@ -24,8 +24,8 @@ import {
 } from "@/components/extension/file-upload";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
 import { identificationDocumentsSchema } from "@/schema/employee.schema";
-import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TIdentificationDocuments } from "@/types";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 type TStep3Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

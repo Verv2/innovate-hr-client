@@ -6,7 +6,7 @@ const DashboardHome = () => {
   return (
     <div className="px-5 py-10">
       <div className="grid grid-cols-5 grid-rows-1 gap-4">
-        <div className="col-span-3 border border-solid border-red-500 rounded-lg p-3">
+        <div className="col-span-3 shadow-2xl rounded-lg p-3">
           <HeaderPart />
           <Separator className="bg-gray-300 my-2" />
           <ThreeTabSection />

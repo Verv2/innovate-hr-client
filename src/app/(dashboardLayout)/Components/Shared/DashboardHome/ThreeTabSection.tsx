@@ -4,27 +4,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle, Clock, Users } from "lucide-react";
 import CurrentlyAbsence from "./CurrentlyAbsence";
 import { useGetAllLeaveToday } from "@/hooks/leave.hooks";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ThreeTabSection = () => {
+  const [activeTab, setActiveTab] = useState("absences");
+
   const {
     data: dataOnLeaveToday = {},
     isSuccess: dataOnLeaveTodaySuccess,
-    refetch: dataOnLeaveTodayRefetch, // ✅ manual trigger
+    refetch: dataOnLeaveTodayRefetch,
     isFetching: dataOnLeaveTodayIsFetching,
   } = useGetAllLeaveToday();
 
-  console.log("Three requestedLeaveData", dataOnLeaveToday);
-
-  // console.log("All leave data today", allLeaveDataToday);
+  useEffect(() => {
+    if (activeTab === "absences") {
+      dataOnLeaveTodayRefetch();
+    }
+  }, [activeTab, dataOnLeaveTodayRefetch]);
 
   return (
     <div>
-      <Tabs defaultValue="absences" className="w-full">
+      <Tabs
+        className="w-full"
+        defaultValue="absences"
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value)}
+      >
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger
-            value="absences"
-            onClick={() => dataOnLeaveTodayRefetch()}
-          >
+          <TabsTrigger value="absences">
             <AlertCircle className="w-4 h-4 mr-2" />
             {dataOnLeaveTodayIsFetching ? "Loading..." : "Current Absences"}
           </TabsTrigger>
@@ -39,7 +47,24 @@ const ThreeTabSection = () => {
         </TabsList>
 
         <TabsContent value="absences" className="mt-6">
-          <CurrentlyAbsence />
+          {dataOnLeaveTodaySuccess ? (
+            <CurrentlyAbsence
+              meta={dataOnLeaveToday?.meta}
+              data={dataOnLeaveToday?.data}
+            />
+          ) : (
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center space-x-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[200px]" />
+                    <Skeleton className="h-4 w-[160px]" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="status" className="mt-6">

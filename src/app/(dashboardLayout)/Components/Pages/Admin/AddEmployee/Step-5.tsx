@@ -24,8 +24,8 @@ import {
 } from "@/components/ui/select";
 import { benefitEnrollmentConstant } from "../../../Shared/constants";
 import { financialInformationSchema } from "@/schema/employee.schema";
-import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TFinancialInformation } from "@/types";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 type TStep5Props = {
   handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;

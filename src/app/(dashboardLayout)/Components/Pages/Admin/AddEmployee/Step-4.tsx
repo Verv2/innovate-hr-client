@@ -28,8 +28,8 @@ import {
 } from "../../../Shared/constants";
 import { DateTimePicker } from "@/components/extension/datetime-picker";
 import { employeeDetailsSchema } from "@/schema/employee.schema";
-import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TEmployeeDetails } from "@/types";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 
 type TStep4Props = {
   handleUseAddTemporaryEmployee: (formData: FormData) => Promise<any>;

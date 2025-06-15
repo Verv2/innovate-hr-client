@@ -197,3 +197,42 @@ export type TRequestedLeaveUser = {
   status: string;
   employee: TEmployee;
 };
+
+export type TLeaveTypes = {
+  ANNUAL_LEAVE: number;
+  SICK_LEAVE: number;
+  UNPAID_LEAVE: number;
+  PATERNITY_LEAVE: number;
+  MATERNITY_LEAVE: number;
+};
+
+export type TLeaveToday = {
+  id: string;
+  employeeId: string;
+  leaveType: string;
+  leaveDates: string[];
+  reason: string;
+  status: string;
+  isOngoing: boolean;
+  employee: {
+    id: string;
+    firstName: string;
+    middleName?: string;
+    lastName: string;
+    employeeLeaves: {
+      id: string;
+      totalLeaveDays: number;
+      availableLeaveDays: number;
+      unpaidLeaveDays: number;
+    };
+    employmentDetails: {
+      id: string;
+      department: string;
+      jobTitle: string;
+    };
+    additionalDocuments: {
+      id: string;
+      recentPhotograph?: string;
+    };
+  };
+};

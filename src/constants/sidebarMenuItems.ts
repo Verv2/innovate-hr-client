@@ -1,15 +1,5 @@
 import { TRole } from "@/types";
-import {
-  Home,
-  Inbox,
-  Calendar,
-  Search,
-  Settings,
-  ShieldCheck,
-  RotateCcwKey,
-  UserRoundPen,
-  FolderInput,
-} from "lucide-react";
+import { Home, RotateCcwKey, UserRoundPen, FolderInput } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 interface MenuItem {
@@ -48,42 +38,19 @@ export const sidebarMenuItems: MenuItem[] = [
     title: "Profile",
     url: "/dashboard/profile",
     icon: UserRoundPen,
-    roles: ["ADMIN", "SUPER_ADMIN", "MANAGER", "EMPLOYEE"],
+    roles: ["ADMIN", "MANAGER", "EMPLOYEE"],
   },
   {
     title: "Change Password",
     url: "/dashboard/change-password",
     icon: RotateCcwKey,
-    roles: ["ADMIN", "SUPER_ADMIN", "EMPLOYEE"],
+    roles: ["ADMIN", "SUPER_ADMIN", "MANAGER", "EMPLOYEE"],
   },
-  {
-    title: "Inbox",
-    url: "/inbox",
-    icon: Inbox,
-    roles: ["ADMIN", "EMPLOYEE"],
-  },
-  {
-    title: "Calendar",
-    url: "/calendar",
-    icon: Calendar,
-    roles: ["ADMIN", "SUPER_ADMIN"],
-  },
-  {
-    title: "Search",
-    url: "/search",
-    icon: Search,
-    roles: ["EMPLOYEE"],
-  },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-    roles: ["ADMIN", "SUPER_ADMIN"],
-  },
-  {
-    title: "Super Admin Panel",
-    url: "/super-admin",
-    icon: ShieldCheck,
-    roles: ["SUPER_ADMIN"],
-  },
+
+  // {
+  //   title: "Super Admin Panel",
+  //   url: "/super-admin",
+  //   icon: ShieldCheck,
+  //   roles: ["SUPER_ADMIN"],
+  // },
 ];

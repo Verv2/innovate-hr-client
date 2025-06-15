@@ -18,8 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { PhoneInput } from "@/components/extension/phone-input";
 import { contactInformationFormSchema } from "@/schema/employee.schema";
-import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 import { TContactInformation } from "@/types";
+import Loading from "@/app/(commonLayout)/Components/UI/Loading/Loading";
 // import { useEffect } from "react";
 
 type TStep2Props = {

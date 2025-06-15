@@ -24,6 +24,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { logout } from "@/services/AuthService";
+import { useRouter } from "next/navigation";
 
 const NavUser = ({
   user,
@@ -34,15 +35,14 @@ const NavUser = ({
     avatar: string;
   };
 }) => {
+  const router = useRouter();
   const { isMobile } = useSidebar();
+
   const handleLogout = () => {
     logout();
-    // userLoading(true);
-
-    // if (protectedRoutes.some((route) => pathName.match(route))) {
-    //   router.push("/");
-    // }
+    router.refresh();
   };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
